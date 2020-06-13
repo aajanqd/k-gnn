@@ -5,6 +5,7 @@
 # import torch.nn.functional as F
 # from torch_scatter import scatter_mean
 from torch_geometric.datasets import TUDataset
+print('hello')
 # import torch_geometric.transforms as T
 # from k_gnn import DataLoader, GraphConv, avg_pool
 # from k_gnn import TwoMalkin, ConnectedThreeMalkin
