@@ -15,7 +15,7 @@ from torch_geometric.data import DataLoader
 
 infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
 
-graph_conv_many_nuc_util.DEFAULT_DATA_HPARAMS
+dataset_hparams = graph_conv_many_nuc_util.DEFAULT_DATA_HPARAMS
 ds_train, ds_test = graph_conv_many_nuc_util.make_datasets({'filename' : infile}, dataset_hparams)
                                                                
 train_loader = torch.utils.data.DataLoader(ds_train, batch_size=64, shuffle=True, pin_memory=True)
