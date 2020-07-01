@@ -1,8 +1,8 @@
 import rdkit
 
 # import os.path as osp
-# import graph_conv_many_nuc_util
-from graph_conv_many_nuc_util import move
+import graph_conv_many_nuc_util
+# from graph_conv_many_nuc_util import move
 # import argparse
 # import torch
 # from torch.nn import Sequential, Linear, ReLU
