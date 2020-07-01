@@ -1,5 +1,6 @@
 import os.path as osp
-
+import graph_conv_many_nuc_util
+from graph_conv_many_nuc_util import move
 import argparse
 import torch
 from torch.nn import Sequential, Linear, ReLU
@@ -9,8 +10,6 @@ from torch_geometric.datasets import QM9
 import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
 from torch_geometric.data import DataLoader
-import graph_conv_many_nuc_util
-from graph_conv_many_nuc_util import move
 
 infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
 
