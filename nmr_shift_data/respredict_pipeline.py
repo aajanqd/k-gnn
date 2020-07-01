@@ -28,7 +28,7 @@ import itertools
 import graph_conv_many_nuc_util
 from graph_conv_many_nuc_util import move
 
-DATASET_DIR = "graph_conv_many_nuc_pipeline.datasets"
+DATASET_DIR = "../nmr_shift_data/graph_conv_many_nuc_pipeline.datasets"
 
 td = lambda x : os.path.join(DATASET_DIR, x)
 
