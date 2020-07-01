@@ -165,6 +165,8 @@ def run_epoch(net, optimizer, criterion, dl,
     else:
         iterator = enumerate(dl)
 
+    #iterate through each part of dl_train or dl_test
+    #adjacency matx, feature vects, matrix feats, target values (chem shift), mask
     for i_batch, (adj, vect_feat, mat_feat, vals, mask) in \
             iterator:
         t1 = time.time()
@@ -175,6 +177,7 @@ def run_epoch(net, optimizer, criterion, dl,
                   "vals.shape=", vals.shape, 
                   "mask.shape=", mask.shape)
 
+
         if not pred_only:
             optimizer.zero_grad()
 
@@ -184,7 +187,7 @@ def run_epoch(net, optimizer, criterion, dl,
         mask_t = move(mask, USE_CUDA)
         vals_t = move(vals, USE_CUDA)
 
-
+        #initializing net with input from adjacency matx and feature vector
         res = net((adj_t, vect_feat_t)) # , mat_feat_t))
 
 

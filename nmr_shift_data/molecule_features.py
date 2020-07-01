@@ -7,6 +7,17 @@ import scipy.spatial
 from rdkit import Chem
 from util import get_nos_coords
 
+def coalesce(index, value):
+    n = index.max().item() + 1
+    row, col = index
+    unique, inv = torch.unique(row * n + col, sorted=True, return_inverse=True)
+
+    perm = torch.arange(inv.size(0), dtype=inv.dtype, device=inv.device)
+    perm = inv.new_empty(unique.size(0)).scatter_(0, inv, perm)
+    index = torch.stack([row[perm], col[perm]], dim=0)
+    value = value[perm]
+
+    return index, value
 
 def feat_tensor_mol(mol, feat_distances=True, feat_r_pow = None, 
                     MAX_POW_M = 2.0, conf_idx = 0):
@@ -51,6 +62,7 @@ def feat_tensor_mol(mol, feat_distances=True, feat_r_pow = None,
 def mol_to_nums_adj(m, MAX_ATOM_N=None):# , kekulize=False):
     """
     molecule to symmetric adjacency matrix
+    added in edge attributes and index
     """
 
     m = Chem.Mol(m)
@@ -83,9 +95,39 @@ def mol_to_nums_adj(m, MAX_ATOM_N=None):# , kekulize=False):
     #adj returns adjacency matrix with bond orders as entries
     #note that adj is SYMMETRIC
     #shape is 64x64, diagonals are all are 0
-    return atomic_nums, adj
+    return atomic_nums, adj, edge_index, edge_attr
 
+def get_edge_attr_and_ind(m):
+    m = Chem.Mol(m)
+    row, col, single, double, triple, aromatic = [], [], [], [], [], []
 
+    for b in m.GetBonds():
+        head = b.GetBeginAtomIdx() #first atom in bond
+        tail = b.GetEndAtomIdx() #second atom in bond
+
+        row.append(head)
+        col.append(tail)
+
+        row.append(tail)
+        col.append(head)
+
+        bond_type = bond.GetBondType()
+        single.append(1 if bond_type == BondType.SINGLE else 0)
+        single.append(single[-1])
+        double.append(1 if bond_type == BondType.DOUBLE else 0)
+        double.append(double[-1])
+        triple.append(1 if bond_type == BondType.TRIPLE else 0)
+        triple.append(triple[-1])
+        aromatic.append(1 if bond_type == BondType.AROMATIC else 0)
+        aromatic.append(aromatic[-1])
+
+    edge_index = torch.tensor([row, col], dtype=torch.long)
+    edge_attr = torch.tensor([single, double, triple, aromatic],
+                             dtype=torch.float).t().contiguous()
+
+    edge_index, edge_attr = coalesce(edge_index, edge_attr)
+
+    return edge_index, edge_attr
 
 def feat_mol_adj(mol, edge_weighted=True, add_identity=False, 
                  norm_adj=False, split_weights = None):

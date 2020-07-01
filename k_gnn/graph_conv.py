@@ -37,9 +37,10 @@ class GraphConv(torch.nn.Module):
             self.bias.data.uniform_(-stdv, stdv)
 
     def forward(self, x, edge_index):
-        if edge_index.numel() > 0:
+        if edge_index.numel() > 0:  #numel returns number of elements
             row, col = edge_index
 
+            # Matrix multiplication between x and weight matrix
             out = torch.mm(x, self.weight)
             out_col = out[col]
 

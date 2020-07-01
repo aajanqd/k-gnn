@@ -83,6 +83,8 @@ class MoleculeDatasetNew(torch.utils.data.Dataset):
         adj_nopad = molecule_features.feat_mol_adj(mol, **self.adj_args)
         adj = torch.zeros((adj_nopad.shape[0], self.MAX_N, self.MAX_N))
         adj[:, :adj_nopad.shape[1], :adj_nopad.shape[2]] = adj_nopad
+
+        edge_index, edge_attr = molecule_features.get_edge_attr_and_ind(m)
                         
         # create mask and preds 
         
@@ -94,7 +96,7 @@ class MoleculeDatasetNew(torch.utils.data.Dataset):
 
         v = (adj, vect_feat, mat_feat, 
             vals, 
-            mask,)
+            mask, edge_index, edge_attr)
         
         
         self.cache[self.cache_key(idx, conf_idx)] = v
@@ -135,7 +137,7 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
         mol = self.mols[idx]
         pred_val = self.pred_vals[idx]
 
-        conf_idx = np.random.randint(mol.GetNumConformers())
+        conf_idx = np.random.randint(mol.GetNumConformers()) #returns random number between 0 and numconformers; this is used to randomly select a conformation
 
         if self.cache_key(idx, conf_idx) in self.cache:
             return self.mask_sel(self.cache[self.cache_key(idx, conf_idx)])
@@ -192,15 +194,15 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
         vals = np.zeros((self.MAX_N, self.PRED_N), 
                         dtype=np.float32)
 
+        edge_index, edge_attr = molecule_features.get_edge_attr_and_ind(m)
+
         #each value in pred_val is a dictionary containing key value pairs of atom numbers and chem shift vals
         for pn in range(self.PRED_N):
             for k, v in pred_val[pn].items():
                 mask[int(k), pn] = 1.0
                 vals[int(k), pn] = v
 
-        v = (adj, vect_feat, mat_feat, 
-            vals, 
-            mask,)
+        v = (adj, vect_feat, mat_feat, edge_index, edge_attr, vals, mask)
         
         
         self.cache[self.cache_key(idx, conf_idx)] = v

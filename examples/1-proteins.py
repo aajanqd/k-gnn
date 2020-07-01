@@ -41,9 +41,12 @@ dataset = dataset[perm]
 class Net(torch.nn.Module):
     def __init__(self):
         super(Net, self).__init__()
+        # This is the update step
         self.conv1 = GraphConv(dataset.num_features, 32)
         self.conv2 = GraphConv(32, 64)
         self.conv3 = GraphConv(64, 64)
+
+        # The transforms the update step into something usable
         self.fc1 = torch.nn.Linear(64, 64)
         self.fc2 = torch.nn.Linear(64, 32)
         self.fc3 = torch.nn.Linear(32, dataset.num_classes)

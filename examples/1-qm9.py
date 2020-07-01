@@ -82,58 +82,53 @@ class Net(torch.nn.Module):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = Net().to(device)
 
-learning_rates = [0.0001,0.001,0.001,0.1]
-minimum_lrs = [0.00001, 0.0001, 0.001]
-
-for lr in learning_rates:
-    for min_lr in minimum_lrs:
-        optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-            optimizer, factor=0.7, patience=5, min_lr=0.00001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+    optimizer, factor=0.7, patience=5, min_lr=0.00001)
 
 
-        def train(epoch):
-            model.train()
-            loss_all = 0
+def train(epoch):
+    model.train()
+    loss_all = 0
 
-            for data in train_loader:
-                data = data.to(device)
-                optimizer.zero_grad()
-                loss = F.mse_loss(model(data), data.y)
-                loss.backward()
-                loss_all += loss * data.num_graphs
-                optimizer.step()
-            return loss_all / len(train_loader.dataset)
-
-
-        def test(loader):
-            model.eval()
-            error = 0
-
-            for data in loader:
-                data = data.to(device)
-                error += ((model(data) * std[target].cuda()) -
-                          (data.y * std[target].cuda())).abs().sum().item()  # MAE
-            return error / len(loader.dataset)
+    for data in train_loader:
+        data = data.to(device)
+        optimizer.zero_grad()
+        loss = F.mse_loss(model(data), data.y)
+        loss.backward()
+        loss_all += loss * data.num_graphs
+        optimizer.step()
+    return loss_all / len(train_loader.dataset)
 
 
-        best_val_error = None
-        for epoch in range(1, 301):
-            lr = scheduler.optimizer.param_groups[0]['lr']
-            loss = train(epoch)
-            val_error = test(val_loader)
-            scheduler.step(val_error)
+def test(loader):
+    model.eval()
+    error = 0
 
-            if best_val_error is None:
-                best_val_error = val_error
-            if val_error <= best_val_error:
-                test_error = test(test_loader)
-                best_val_error = val_error
-                print(
-                    'Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Validation MAE: {:.7f}, '
-                    'Test MAE: {:.7f}, '
-                    'Test MAE norm: {:.7f}'.format(epoch, lr, loss, val_error,
-                                                   test_error,
-                                                   test_error / std[target].cuda()))
-            else:
-                print('Epoch: {:03d}'.format(epoch))
+    for data in loader:
+        data = data.to(device)
+        error += ((model(data) * std[target].cuda()) -
+                  (data.y * std[target].cuda())).abs().sum().item()  # MAE
+    return error / len(loader.dataset)
+
+
+best_val_error = None
+for epoch in range(1, 301):
+    lr = scheduler.optimizer.param_groups[0]['lr']
+    loss = train(epoch)
+    val_error = test(val_loader)
+    scheduler.step(val_error)
+
+    if best_val_error is None:
+        best_val_error = val_error
+    if val_error <= best_val_error:
+        test_error = test(test_loader)
+        best_val_error = val_error
+        print(
+            'Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Validation MAE: {:.7f}, '
+            'Test MAE: {:.7f}, '
+            'Test MAE norm: {:.7f}'.format(epoch, lr, loss, val_error,
+                                           test_error,
+                                           test_error / std[target].cuda()))
+    else:
+        print('Epoch: {:03d}'.format(epoch))
