@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#SBATCH --job-name=NMR_paper_no_changes
+#SBATCH --job-name=1-NMR
 #SBATCH --nodes=1 
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=1
