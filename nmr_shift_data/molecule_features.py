@@ -128,13 +128,13 @@ def get_edge_attr_and_ind(m):
         aromatic.append(1 if bond_type == BondType.AROMATIC else 0)
         aromatic.append(aromatic[-1])
 
-    # for i in range(140 - m.GetNumBonds()):
-    #     row.append(0)
-    #     col.append(0)
-    #     single.append(0)
-    #     double.append(0)
-    #     triple.append(0)
-    #     aromatic.append(0)
+    for i in range(140 - 2*m.GetNumBonds()):
+        row.append(0)
+        col.append(0)
+        single.append(0)
+        double.append(0)
+        triple.append(0)
+        aromatic.append(0)
 
     edge_index = torch.tensor([row, col], dtype=torch.long)
     edge_attr = torch.tensor([single, double, triple, aromatic],
