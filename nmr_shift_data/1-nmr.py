@@ -66,6 +66,7 @@ def train(epoch):
     loss_all = 0
 
     for data in train_loader:
+        print(type(data), data[0])
         data = data.to(device)
         optimizer.zero_grad()
         loss = F.mse_loss(model(data), data[5])
@@ -90,8 +91,8 @@ best_val_error = None
 for epoch in range(1, 301):
     lr = scheduler.optimizer.param_groups[0]['lr']
     loss = train(epoch)
-    val_error = test(val_loader)
-    scheduler.step(val_error)
+    # val_error = test(val_loader)
+    # scheduler.step(val_error)
 
     if epoch%50==0:
         test_error = test(test_loader)
