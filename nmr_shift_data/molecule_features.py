@@ -101,9 +101,9 @@ def get_edge_attr_and_ind(m):
     m = Chem.Mol(m)
     row, col, single, double, triple, aromatic = [], [], [], [], [], []
 
-    for b in m.GetBonds():
-        head = b.GetBeginAtomIdx() #first atom in bond
-        tail = b.GetEndAtomIdx() #second atom in bond
+    for bond in m.GetBonds():
+        head = bond.GetBeginAtomIdx() #first atom in bond
+        tail = bond.GetEndAtomIdx() #second atom in bond
 
         row.append(head)
         col.append(tail)
