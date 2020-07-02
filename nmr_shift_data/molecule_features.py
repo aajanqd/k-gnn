@@ -95,7 +95,7 @@ def mol_to_nums_adj(m, MAX_ATOM_N=None):# , kekulize=False):
     #adj returns adjacency matrix with bond orders as entries
     #note that adj is SYMMETRIC
     #shape is 64x64, diagonals are all are 0
-    return atomic_nums, adj, edge_index, edge_attr
+    return atomic_nums, adj
 
 def get_edge_attr_and_ind(m):
     m = Chem.Mol(m)
