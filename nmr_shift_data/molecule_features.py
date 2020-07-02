@@ -5,6 +5,12 @@ import torch
 from numba import jit
 import scipy.spatial
 from rdkit import Chem
+from rdkit.Chem import ChemicalFeatures
+from rdkit import RDConfig
+import torch
+from rdkit.Chem import AllChem  # noqa
+from rdkit.Chem.rdchem import HybridizationType
+from rdkit.Chem.rdchem import BondType
 from util import get_nos_coords
 
 def coalesce(index, value):
