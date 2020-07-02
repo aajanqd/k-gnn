@@ -200,7 +200,7 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
                 mask[int(k), pn] = 1.0
                 vals[int(k), pn] = v
 
-        v = (vect_feat, vals, edge_attr)
+        v = (vect_feat, edge_index, edge_attr, vals)
         
         
         # self.cache[self.cache_key(idx, conf_idx)] = v
