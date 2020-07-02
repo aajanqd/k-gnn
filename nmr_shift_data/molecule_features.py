@@ -105,6 +105,7 @@ def mol_to_nums_adj(m, MAX_ATOM_N=None):# , kekulize=False):
 
 def get_edge_attr_and_ind(m):
     m = Chem.Mol(m)
+    print(m.GetNumBonds())
     row, col, single, double, triple, aromatic = [], [], [], [], [], []
 
     for bond in m.GetBonds():
