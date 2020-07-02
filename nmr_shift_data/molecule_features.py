@@ -139,7 +139,7 @@ def get_edge_attr_and_ind(m):
     edge_attr = torch.tensor([single, double, triple, aromatic],
                              dtype=torch.float).t().contiguous()
 
-    edge_index, edge_attr = coalesce(edge_index, edge_attr)
+    # edge_index, edge_attr = coalesce(edge_index, edge_attr)
 
     return edge_index, edge_attr
 
