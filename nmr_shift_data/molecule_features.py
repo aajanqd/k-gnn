@@ -154,7 +154,7 @@ def get_edge_attr_and_ind(m):
 
     # edge_index, edge_attr = coalesce(edge_index, edge_attr)
 
-    return a,b
+    return edge_index, edge_attr
 
 def feat_mol_adj(mol, edge_weighted=True, add_identity=False, 
                  norm_adj=False, split_weights = None):
