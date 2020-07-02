@@ -194,7 +194,7 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
         vals = np.zeros((self.MAX_N, self.PRED_N), 
                         dtype=np.float32)
 
-        edge_index, edge_attr = molecule_features.get_edge_attr_and_ind(m)
+        edge_index, edge_attr = molecule_features.get_edge_attr_and_ind(mol)
 
         #each value in pred_val is a dictionary containing key value pairs of atom numbers and chem shift vals
         for pn in range(self.PRED_N):
