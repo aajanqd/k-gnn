@@ -94,9 +94,7 @@ class MoleculeDatasetNew(torch.utils.data.Dataset):
             mask[k] = 1.0
             vals[k] = v
 
-        v = (adj, vect_feat, mat_feat, 
-            vals, 
-            mask, edge_index, edge_attr)
+        v = (vect_feat, vals, edge_index, edge_attr)
         
         
         self.cache[self.cache_key(idx, conf_idx)] = v
@@ -202,11 +200,11 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
                 mask[int(k), pn] = 1.0
                 vals[int(k), pn] = v
 
-        v = (adj, vect_feat, mat_feat, edge_index, edge_attr, vals, mask)
+        v = (vect_feat, vals, edge_index, edge_attr)
         
         
-        self.cache[self.cache_key(idx, conf_idx)] = v
+        # self.cache[self.cache_key(idx, conf_idx)] = v
 
         #returns tuple containing tensors for adj matx, feature vects, feature matxs, targets, and mask
         #each one of these things exists for every atom
-        return self.mask_sel(v)
+        return v
