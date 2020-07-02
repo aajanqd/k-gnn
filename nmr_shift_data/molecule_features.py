@@ -105,7 +105,7 @@ def mol_to_nums_adj(m, MAX_ATOM_N=None):# , kekulize=False):
 
 def get_edge_attr_and_ind(m):
     m = Chem.Mol(m)
-    print(m.GetNumBonds())
+    # print(m.GetNumBonds())
     row, col, single, double, triple, aromatic = [], [], [], [], [], []
 
     for bond in m.GetBonds():
@@ -140,10 +140,10 @@ def get_edge_attr_and_ind(m):
     edge_attr = torch.tensor([single, double, triple, aromatic],
                              dtype=torch.float).t().contiguous()
 
-    print(tuple(edge_index.size()))
-    print(tuple(edge_attr.size()))
-    assert tuple(edge_index.size()) == (2,140)
-    assert tuple(edge_attr.size()) == (4,140)
+    # print(tuple(edge_index.size()))
+    # print(tuple(edge_attr.size()))
+    # assert tuple(edge_index.size()) == (2,140)
+    # assert tuple(edge_attr.size()) == (4,140)
 
     edge_index, edge_attr = coalesce(edge_index, edge_attr)
 
