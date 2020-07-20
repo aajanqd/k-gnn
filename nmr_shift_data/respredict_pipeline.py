@@ -43,9 +43,9 @@ td = lambda x : os.path.join(DATASET_DIR, x)
 
 SPECT_SET = '1H' # or '13C'
 
-TENSORBOARD_DIR = f"logs.{SPECT_SET}"
+TENSORBOARD_DIR = f"1nmr_logs.{SPECT_SET}"
 
-CHECKPOINT_DIR = "checkpoints" 
+CHECKPOINT_DIR = "1nmr_checkpoints" 
 MAT_PROPS= 'aromatic'
 DATASET_NAME = 'nmrshiftdb_hconfspcl_nmrshiftdb'
 #DATASET_NAME = 'qm9'
