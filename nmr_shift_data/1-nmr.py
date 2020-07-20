@@ -80,6 +80,7 @@ def test(loader):
     error = 0
 
     for data in loader:
+        print(type(data))
         data = data.to(device)
         error += ((model(data) * std[target].cuda()) -
                   (data[5] * std[target].cuda())).abs().sum().item()  # MAE
