@@ -1,3 +1,7 @@
+####################################
+print("starting")
+####################################
+
 import numpy as np
 import pickle
 import pandas as pd
@@ -27,6 +31,10 @@ import netdataio
 import itertools
 import graph_conv_many_nuc_util
 from graph_conv_many_nuc_util import move
+
+####################################
+print("finished importing")
+####################################
 
 DATASET_DIR = "/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets"
 
