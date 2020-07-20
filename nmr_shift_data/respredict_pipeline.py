@@ -64,6 +64,10 @@ MAX_EPOCHS = 10000
 
 EXP_NAME = f"good_{SPECT_SET}"
 
+####################################
+print("finished setting variables")
+####################################
+
 
 def create_validate_func(tgt_nucs):
     def val_func(res): # val, mask, truth):
@@ -139,6 +143,10 @@ def params():
 
 
     yield infile, outfile, seed
+
+####################################
+print("finished making functs")
+####################################
 
 @mkdir(CHECKPOINT_DIR)
 @files(params)
