@@ -66,6 +66,9 @@ def train(epoch):
     loss_all = 0
 
     for data in train_loader:
+        print(type(data))
+        if type(data) == list:
+            print(len(data))
         data = data.to(device)
         optimizer.zero_grad()
         loss = F.mse_loss(model(data), data[5])
@@ -80,9 +83,6 @@ def test(loader):
     error = 0
 
     for data in loader:
-        print(type(data))
-        if type(data) == list:
-            print(len(data))
         data = data.to(device)
         error += ((model(data) * std[target].cuda()) -
                   (data[5] * std[target].cuda())).abs().sum().item()  # MAE
@@ -99,6 +99,7 @@ print("starting training")
 best_val_error = None
 for epoch in range(1, 301):
     lr = scheduler.optimizer.param_groups[0]['lr']
+    print('get loss')
     loss = train(epoch)
     # val_error = test(val_loader)
     # scheduler.step(val_error)
