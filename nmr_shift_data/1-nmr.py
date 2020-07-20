@@ -62,9 +62,12 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, pa
 
 
 def train(epoch):
+    print('model.train')
     model.train()
+    print('loss_all')
     loss_all = 0
 
+    print('iterate')
     for data in train_loader:
         print(type(data))
         if type(data) == list:
