@@ -66,7 +66,6 @@ def train(epoch):
     loss_all = 0
 
     for data in train_loader:
-        print(type(data), data[0])
         data = data.to(device)
         optimizer.zero_grad()
         loss = F.mse_loss(model(data), data[5])
@@ -85,6 +84,13 @@ def test(loader):
         error += ((model(data) * std[target].cuda()) -
                   (data[5] * std[target].cuda())).abs().sum().item()  # MAE
     return error / len(loader.dataset)
+
+
+
+####################################################
+print("starting training")
+####################################################
+
 
 
 best_val_error = None
