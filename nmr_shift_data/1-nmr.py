@@ -81,6 +81,8 @@ def test(loader):
 
     for data in loader:
         print(type(data))
+        if type(data) == list:
+            print(len(data))
         data = data.to(device)
         error += ((model(data) * std[target].cuda()) -
                   (data[5] * std[target].cuda())).abs().sum().item()  # MAE
