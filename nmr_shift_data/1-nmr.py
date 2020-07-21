@@ -42,7 +42,7 @@ class Net(torch.nn.Module):
 
     def forward(self, data):
         x, edge_index, edge_attr = data[0], data[1], data[2]
-        print(type(x),type(edge_index),type(edge_attr))
+        print(type(edge_attr), torch.is_tensor(edge_attr), type(edge_attr.tolist()))
         x = F.elu(self.conv1(x, edge_index, edge_attr))
         x = F.elu(self.conv2(x, edge_index, edge_attr))
         x = F.elu(self.conv3(x, edge_index, edge_attr))
@@ -67,9 +67,6 @@ def train(epoch):
     loss_all = 0
 
     for data in train_loader:
-        print(type(data))
-        if type(data) == list:
-            print(len(data))
         # data = data.to(device)
         optimizer.zero_grad()
         loss = F.mse_loss(model(data), data[3])
