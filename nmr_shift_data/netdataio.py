@@ -199,8 +199,8 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
             for k, v in pred_val[pn].items():
                 mask[int(k), pn] = 1.0
                 vals[int(k), pn] = v
-                
-        print(vect_feat.size())
+
+        print(vect_feat.shape)
         v = (vect_feat, edge_index, edge_attr, vals)
         
         
