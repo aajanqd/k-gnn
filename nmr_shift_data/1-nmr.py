@@ -72,7 +72,7 @@ def train(epoch):
         print(type(data))
         if type(data) == list:
             print(len(data))
-        data = data.to(device)
+        # data = data.to(device)
         optimizer.zero_grad()
         loss = F.mse_loss(model(data), data[5])
         loss.backward()
