@@ -42,7 +42,7 @@ class Net(torch.nn.Module):
 
     def forward(self, data):
         x, edge_index, edge_attr = data[0], data[1], data[2]
-        print(type(edge_attr), torch.is_tensor(edge_attr), type(edge_attr.tolist()))
+        print(x.size(), edge_index.size(), edge_attr.size())
         x = F.elu(self.conv1(x, edge_index, edge_attr))
         x = F.elu(self.conv2(x, edge_index, edge_attr))
         x = F.elu(self.conv3(x, edge_index, edge_attr))
@@ -66,14 +66,20 @@ def train(epoch):
     model.train()
     loss_all = 0
 
-    for data in train_loader:
+    for i, data in enumerate(train_loader):
         # data = data.to(device)
-        optimizer.zero_grad()
-        loss = F.mse_loss(model(data), data[3])
-        loss.backward()
-        loss_all += loss * 64
-        optimizer.step()
-    return loss_all / len(train_loader.dataset)
+        x, edge_index, edge_attr = data[0], data[1], data[2]
+        print(x.size(), edge_index.size(), edge_attr.size())
+        if i >=5:
+            break
+    # UNCOMMENT THIS AND BELOW
+    #     optimizer.zero_grad()
+    #     loss = F.mse_loss(model(data), data[3])
+    #     loss.backward()
+    #     loss_all += loss * 64
+    #     optimizer.step()
+    # return loss_all / len(train_loader.dataset)
+    return True
 
 
 def test(loader):
@@ -94,14 +100,15 @@ for epoch in range(1, 301):
     # val_error = test(val_loader)
     # scheduler.step(val_error)
 
-    if epoch%50==0:
-        test_error = test(test_loader)
-        best_val_error = val_error
-        print(
-            'Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}'
-            'Test MAE: {:.7f}, '
-            'Test MAE norm: {:.7f}'.format(epoch, lr, loss,
-                                           test_error,
-                                           test_error / std[target].cuda()))
-    else:
-        print('Epoch: {:03d}'.format(epoch))
+    # UNCOMMENT THIS AND BELOW
+    # if epoch%50==0:
+    #     test_error = test(test_loader)
+    #     best_val_error = val_error
+    #     print(
+    #         'Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}'
+    #         'Test MAE: {:.7f}, '
+    #         'Test MAE norm: {:.7f}'.format(epoch, lr, loss,
+    #                                        test_error,
+    #                                        test_error / std[target].cuda()))
+    # else:
+    #     print('Epoch: {:03d}'.format(epoch))
