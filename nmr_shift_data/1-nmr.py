@@ -42,6 +42,7 @@ class Net(torch.nn.Module):
 
     def forward(self, data):
         x, edge_index, edge_attr = data[0], data[1], data[2]
+        print(type(x),type(edge_index),type(edge_attr))
         x = F.elu(self.conv1(x, edge_index, edge_attr))
         x = F.elu(self.conv2(x, edge_index, edge_attr))
         x = F.elu(self.conv3(x, edge_index, edge_attr))
@@ -62,12 +63,9 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, pa
 
 
 def train(epoch):
-    print('model.train')
     model.train()
-    print('loss_all')
     loss_all = 0
 
-    print('iterate')
     for data in train_loader:
         print(type(data))
         if type(data) == list:
@@ -92,17 +90,9 @@ def test(loader):
     return error / len(loader.dataset)
 
 
-
-####################################################
-print("starting training")
-####################################################
-
-
-
 best_val_error = None
 for epoch in range(1, 301):
     lr = scheduler.optimizer.param_groups[0]['lr']
-    print('get loss')
     loss = train(epoch)
     # val_error = test(val_loader)
     # scheduler.step(val_error)
