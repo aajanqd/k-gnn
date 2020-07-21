@@ -41,7 +41,7 @@ class Net(torch.nn.Module):
         self.fc3 = torch.nn.Linear(64, 1)
 
     def forward(self, data):
-        x, edge_index, edge_attr = data[1], data[3], data[4]
+        x, edge_index, edge_attr = data[0], data[1], data[2]
         x = F.elu(self.conv1(x, edge_index, edge_attr))
         x = F.elu(self.conv2(x, edge_index, edge_attr))
         x = F.elu(self.conv3(x, edge_index, edge_attr))
@@ -74,7 +74,7 @@ def train(epoch):
             print(len(data))
         # data = data.to(device)
         optimizer.zero_grad()
-        loss = F.mse_loss(model(data), data[5])
+        loss = F.mse_loss(model(data), data[3])
         loss.backward()
         loss_all += loss * 64
         optimizer.step()
