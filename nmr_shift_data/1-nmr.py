@@ -52,7 +52,7 @@ class Net(torch.nn.Module):
     def forward(self, data):
         x, edge_index, edge_attr = data[0][0], data[1][0], data[2][0]
         x, edge_index, edge_attr = x.to(device), edge_index.to(device), edge_attr.to(device)
-        print(x.size(), edge_index.size(), edge_attr.size())
+        # print(x.size(), edge_index.size(), edge_attr.size())
         x = F.elu(self.conv1(x, edge_index, edge_attr))
         x = F.elu(self.conv2(x, edge_index, edge_attr))
         x = F.elu(self.conv3(x, edge_index, edge_attr))
@@ -113,5 +113,7 @@ for epoch in range(1, 301):
             'Test MAE norm: {:.7f}'.format(epoch, lr, loss,
                                            test_error,
                                            test_error / std[target].cuda()))
+        sys.stdout.flush()
     else:
         print('Epoch: {:03d}'.format(epoch))
+        sys.stdout.flush()
