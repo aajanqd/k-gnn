@@ -61,7 +61,7 @@ class Net(torch.nn.Module):
         x = F.elu(self.conv2(x, edge_index, edge_attr))
         x = F.elu(self.conv3(x, edge_index, edge_attr))
 
-        x = scatter_mean(x, data.batch, dim=0)
+        # x = scatter_mean(x, data.batch, dim=0)
 
         x = F.elu(self.fc1(x))
         x = F.elu(self.fc2(x))
