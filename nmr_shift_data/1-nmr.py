@@ -37,7 +37,7 @@ class Net(torch.nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         M_in, M_out = 37, 128
-        nn1 = Sequential(Linear(5, 512), ReLU(), Linear(512, M_in * M_out))
+        nn1 = Sequential(Linear(4, 512), ReLU(), Linear(512, M_in * M_out))
         self.conv1 = NNConv(M_in, M_out, nn1)
 
         M_in, M_out = M_out, 256
