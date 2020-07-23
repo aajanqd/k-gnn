@@ -55,7 +55,6 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
             for k, v in pred_val[pn].items():
                 vals[int(k), pn] = v
         print('printing vals params', type(vals), vals.shape, vals)
-        sys.stdout.flush()
 
         v = (vect_feat, edge_index, edge_attr, vals)
 
