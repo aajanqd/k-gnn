@@ -54,11 +54,14 @@ class knnGraph(InMemoryDataset):
 def process(infile):
 	dataset_hparams = graph_conv_many_nuc_util.DEFAULT_DATA_HPARAMS
 	ds_train, ds_test = graph_conv_many_nuc_util.make_datasets({'filename' : infile}, dataset_hparams)
+	print('made datasets')
+	sys.stdout.flush()
 	torch.save(ds_train, '/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/train_temp.pt')
 	torch.save(ds_test, '/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/test_temp.pt')
-
+	print('saved temp files')
 	dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/')
 	train_loader = DataLoader(dataset, batch_size=64, num_workers=1)
+	print('created data loader')
 
 	for i, t in enumerate(train_loader):
 		print(t.x.size())
