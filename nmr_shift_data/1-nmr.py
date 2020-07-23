@@ -67,6 +67,8 @@ def train(epoch):
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
+        print(type(data.y), type(data))
+        sys.stdout.flush()
         loss = F.mse_loss(model(data), data.y)
         loss.backward()
         loss_all += loss * 64
