@@ -10,7 +10,7 @@ from torch_geometric.data import (InMemoryDataset, download_url, extract_tar,
                                   Data)
 
 
-class knnGraph(InMemoryDataset, dset):
+class knnGraph(InMemoryDataset):
     def __init__(self,
                  root,
                  transform=None,
