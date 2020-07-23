@@ -121,22 +121,23 @@ def make_datasets(exp_config, hparams, train_sample=0):
 
     datasets = {}
 
-    for phase, df in [('train', train_df), 
-                      ('test', test_df)]:
+    df = train_df.append(test_df)
+    # for phase, df in [('train', train_df), 
+    #                   ('test', test_df)]:
                        
 
-        ds = netdataio.MoleculeDatasetMulti(df.rdmol.tolist(), 
-                                            df.value.tolist(),  
-                                            MAX_N, len(tgt_nucs), 
-                                            hparams['feat_vect_args'], 
-                                            hparams['feat_mat_args'], 
-                                            hparams['adj_args'])        
-        datasets[phase] = ds
+    ds = netdataio.MoleculeDatasetMulti(df.rdmol.tolist(), 
+                                        df.value.tolist(),  
+                                        MAX_N, len(tgt_nucs), 
+                                        hparams['feat_vect_args'], 
+                                        hparams['feat_mat_args'], 
+                                        hparams['adj_args'])        
+    # datasets[phase] = ds
 
         
 
     # return datasets['train'], datasets['test']
-    return datasets['train'].append(datasets['test'])
+    return ds
 
 
 def create_checkpoint_func(every_n, filename_str):
