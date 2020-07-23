@@ -135,7 +135,8 @@ def make_datasets(exp_config, hparams, train_sample=0):
 
         
 
-    return datasets['train'].append(datasets['test'])
+    return datasets['train'], datasets['test']
+    # return datasets['train'].append(datasets['test'])
 
 
 def create_checkpoint_func(every_n, filename_str):
