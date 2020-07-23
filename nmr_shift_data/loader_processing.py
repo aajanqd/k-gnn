@@ -13,6 +13,7 @@ from torch_geometric.data import (InMemoryDataset, download_url, extract_tar,
 class knnGraph(InMemoryDataset):
     def __init__(self,
                  root,
+                 dset,
                  transform=None,
                  pre_transform=None,
                  pre_filter=None):
