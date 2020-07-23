@@ -19,12 +19,13 @@ class knnGraph(InMemoryDataset, set):
         super(knnGraph, self).__init__(root, transform, pre_transform, pre_filter)
         self.type = type
         self.data, self.slices = torch.load(self.processed_paths[0])
+        self.set = set
 
     @property
     def raw_file_names(self):
-    	if set == 'train':
+    	if self.set == 'train':
     		return 'train_temp.pt'
-    	elif set == 'test':
+    	elif self.set == 'test':
     		return 'test_temp.pt'
     	else:
     		print('not working')
@@ -32,9 +33,9 @@ class knnGraph(InMemoryDataset, set):
 
     @property
     def processed_file_names(self):
-    	if set == 'train':
+    	if self.set == 'train':
     		return 'train.pt'
-    	elif set == 'test':
+    	elif self.set == 'test':
     		return 'test.pt'
     	else:
     		print('not working')
