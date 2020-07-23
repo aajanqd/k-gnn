@@ -17,7 +17,7 @@ class knnGraph(InMemoryDataset):
                  transform=None,
                  pre_transform=None,
                  pre_filter=None):
-        super(knnGraph, self).__init__(root, transform, pre_transform, pre_filter)
+        super(knnGraph, self).__init__(root, dset, transform, pre_transform, pre_filter)
         self.type = type
         self.data, self.slices = torch.load(self.processed_paths[0])
         self.dset = dset
