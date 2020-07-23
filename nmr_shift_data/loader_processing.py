@@ -70,4 +70,5 @@ def process(infile):
 	train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
 	test_loader = DataLoader(test_dataset, batch_size=64, num_workers=1)
 	print('created data loaders')
+	sys.stdout.flush()
 	return train_loader, test_loader
