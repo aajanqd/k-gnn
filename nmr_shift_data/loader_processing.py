@@ -23,16 +23,16 @@ class knnGraph(InMemoryDataset, set):
     @property
     def raw_file_names(self):
     	if set == 'train':
-        	return 'train_temp.pt'
-        elif set == 'test':
-        	return 'test_temp.pt'
+    		return 'train_temp.pt'
+    	elif set == 'test':
+    		return 'test_temp.pt'
 
     @property
     def processed_file_names(self):
-        if set == 'train':
-        	return 'train.pt'
-        elif set == 'test':
-        	return 'test.pt'
+    	if set == 'train':
+    		return 'train.pt'
+    	elif set == 'test':
+    		return 'test.pt'
     
     def download(self):
         pass
