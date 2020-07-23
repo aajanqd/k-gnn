@@ -67,7 +67,7 @@ def train(epoch):
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-        print(type(data.y), type(data.y[0]))
+        print(type(data.y), type(data.y[0]), torch.FloatTensor(data.y).size())
         sys.stdout.flush()
         loss = F.mse_loss(model(data), torch.FloatTensor(data.y))
         loss.backward()
