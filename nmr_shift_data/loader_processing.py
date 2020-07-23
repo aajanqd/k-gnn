@@ -69,15 +69,5 @@ def process(infile):
 	sys.stdout.flush()
 	train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
 	test_loader = DataLoader(test_dataset, batch_size=64, num_workers=1)
-	print('created data loader')
-
-	for i, t in enumerate(train_loader):
-		print(t.x.size())
-		if i >5:
-			break
-	for i, t in enumerate(test_loader):
-		print(t.x.size())
-		if i >5:
-			break
-
-process('/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle')
+	print('created data loaders')
+	return train_loader, test_loader

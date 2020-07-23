@@ -12,15 +12,14 @@ import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
 import DataLoader
 import sys
-from file import process
-
-print("done importing")
-sys.stdout.flush()
+from loader_processing import process
 
 infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
                                                                
 train_loader, test_loader = process(infile)
 
+print('train loaders in 1-nmr')
+sys.stdout.flush()
 
 class Net(torch.nn.Module):
     def __init__(self):
@@ -42,15 +41,12 @@ class Net(torch.nn.Module):
         self.fc3 = torch.nn.Linear(64, 1)
 
     def forward(self, data):
-        x, edge_index, edge_attr = data[0], data[1], data[2]
-        x, edge_index, edge_attr = x.to(device), edge_index.to(device), edge_attr.to(device)
-        # print(x.size(), edge_index.size(), edge_attr.size())
-        # sys.stdout.flush()
-        x = F.elu(self.conv1(x, edge_index, edge_attr))
-        x = F.elu(self.conv2(x, edge_index, edge_attr))
-        x = F.elu(self.conv3(x, edge_index, edge_attr))
+        x = data.x
+        x = F.elu(self.conv1(x, data.edge_index, data.edge_attr))
+        x = F.elu(self.conv2(x, data.edge_index, data.edge_attr))
+        x = F.elu(self.conv3(x, data.edge_index, data.edge_attr))
 
-        # x = scatter_mean(x, data.batch, dim=0)
+        x = scatter_mean(x, data.batch, dim=0)
 
         x = F.elu(self.fc1(x))
         x = F.elu(self.fc2(x))
@@ -70,11 +66,9 @@ def train(epoch):
     loss_all = 0
 
     for i, data in enumerate(train_loader):
-        # data = data.to(device)
+        data = data.to(device)
         optimizer.zero_grad()
-        print(data[3].size())
-        sys.stdout.flush()
-        loss = F.mse_loss(model(data), data[3].to(device))
+        loss = F.mse_loss(model(data), data.y)
         loss.backward()
         loss_all += loss * 64
         optimizer.step()
