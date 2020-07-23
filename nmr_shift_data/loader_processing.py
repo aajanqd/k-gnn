@@ -37,10 +37,10 @@ class knnGraph(InMemoryDataset):
         sys.stdout.flush()
         data_list = [
             Data(
-                x=d['x'],
-                edge_index=d['edge_index'],
-                edge_attr=d['edge_attr'],
-                y=d['y'],
+                x=d[0],
+                edge_index=d[1],
+                edge_attr=d[2],
+                y=d[3],
                 ) for d in raw_data_list
         ]
 
