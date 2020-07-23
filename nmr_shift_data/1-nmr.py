@@ -22,8 +22,8 @@ infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.data
 dataset_hparams = graph_conv_many_nuc_util.DEFAULT_DATA_HPARAMS
 ds_train, ds_test = graph_conv_many_nuc_util.make_datasets({'filename' : infile}, dataset_hparams)
                                                                
-train_loader = torch.utils.data.DataLoader(ds_train, batch_size=32, shuffle=True, pin_memory=True)
-test_loader = torch.utils.data.DataLoader(ds_test, batch_size=32, shuffle=True, pin_memory=True)
+train_loader = torch.utils.data.DataLoader(ds_train, batch_size=64, shuffle=True, pin_memory=True)
+test_loader = torch.utils.data.DataLoader(ds_test, batch_size=64, shuffle=True, pin_memory=True)
 
 # for i, data in enumerate(train_loader):
 #     x, edge_index, edge_attr = data[0], data[1], data[2]
@@ -53,7 +53,7 @@ class Net(torch.nn.Module):
         self.fc3 = torch.nn.Linear(64, 1)
 
     def forward(self, data):
-        x, edge_index, edge_attr = data[0], data[1], data[2]
+        x, edge_index, edge_attr = data[0][0], data[1][0], data[2][0]
         x, edge_index, edge_attr = x.to(device), edge_index.to(device), edge_attr.to(device)
         # print(x.size(), edge_index.size(), edge_attr.size())
         # sys.stdout.flush()
@@ -83,6 +83,8 @@ def train(epoch):
     for i, data in enumerate(train_loader):
         # data = data.to(device)
         optimizer.zero_grad()
+        print(data[3].size())
+        sys.stdout.flush()
         loss = F.mse_loss(model(data), data[3].to(device))
         loss.backward()
         loss_all += loss * 64
