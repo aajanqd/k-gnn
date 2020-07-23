@@ -59,7 +59,10 @@ def process(infile):
 	torch.save(ds_train, '/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/raw/train_temp.pt')
 	torch.save(ds_test, '/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/raw/test_temp.pt')
 	print('saved temp files')
+	sys.stdout.flush()
 	dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/')
+	print('made dataset')
+	sys.stdout.flush()
 	train_loader = DataLoader(dataset, batch_size=64, num_workers=1)
 	print('created data loader')
 
