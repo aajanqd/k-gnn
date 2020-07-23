@@ -22,11 +22,11 @@ class knnGraph(InMemoryDataset):
 
     @property
     def raw_file_names(self):
-        return 'train_temp.pt'
+        return 'temp.pt'
 
     @property
     def processed_file_names(self):
-        return 'train.pt'
+        return 'whole.pt'
     
     def download(self):
         pass
