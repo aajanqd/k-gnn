@@ -10,7 +10,6 @@ from torch_scatter import scatter_mean
 from torch_geometric.datasets import QM9
 import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
-import DataLoader
 import sys
 from loader_processing import process
 
