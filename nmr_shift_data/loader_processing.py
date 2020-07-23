@@ -10,7 +10,7 @@ from torch_geometric.data import (InMemoryDataset, download_url, extract_tar,
                                   Data)
 
 
-class knnGraph(InMemoryDataset):
+class knnGraph(InMemoryDataset, set):
     def __init__(self,
                  root,
                  transform=None,
@@ -22,11 +22,17 @@ class knnGraph(InMemoryDataset):
 
     @property
     def raw_file_names(self):
-        return 'train_temp.pt'
+    	if set == 'train':
+        	return 'train_temp.pt'
+        elif set == 'test':
+        	return 'test_temp.pt'
 
     @property
     def processed_file_names(self):
-        return 'train.pt'
+        if set == 'train':
+        	return 'train.pt'
+        elif set == 'test':
+        	return 'test.pt'
     
     def download(self):
         pass
@@ -62,15 +68,15 @@ def process(infile):
 	torch.save(ds_test, '/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/raw/test_temp.pt')
 	print('saved temp files')
 	sys.stdout.flush()
-	dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/')
+	train_dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/', set = 'train')
+	test_dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/', set = 'test')
 	print('made dataset')
 	sys.stdout.flush()
-	train_loader = DataLoader(dataset, batch_size=64, num_workers=1)
+	train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
+	test_loader = DataLoader(test_dataset, batch_size=64, num_workers=1)
 	print('created data loader')
 
 	for i, t in enumerate(train_loader):
 		print(t.x.size())
 		if i >5:
 			break
-
-process('/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle')
