@@ -10,7 +10,7 @@ from torch_geometric.data import (InMemoryDataset, download_url, extract_tar,
                                   Data)
 
 
-class knnGraph(InMemoryDataset, set):
+class knnGraph(InMemoryDataset, dset):
     def __init__(self,
                  root,
                  transform=None,
@@ -19,13 +19,13 @@ class knnGraph(InMemoryDataset, set):
         super(knnGraph, self).__init__(root, transform, pre_transform, pre_filter)
         self.type = type
         self.data, self.slices = torch.load(self.processed_paths[0])
-        self.set = set
+        self.dset = dset
 
     @property
     def raw_file_names(self):
-    	if self.set == 'train':
+    	if self.dset == 'train':
     		return 'train_temp.pt'
-    	elif self.set == 'test':
+    	elif self.dset == 'test':
     		return 'test_temp.pt'
     	else:
     		print('not working')
@@ -33,9 +33,9 @@ class knnGraph(InMemoryDataset, set):
 
     @property
     def processed_file_names(self):
-    	if self.set == 'train':
+    	if self.dset == 'train':
     		return 'train.pt'
-    	elif self.set == 'test':
+    	elif self.dset == 'test':
     		return 'test.pt'
     	else:
     		print('not working')
@@ -75,8 +75,8 @@ def process(infile):
 	torch.save(ds_test, '/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/raw/test_temp.pt')
 	print('saved temp files')
 	sys.stdout.flush()
-	train_dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/', set = 'train')
-	test_dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/', set = 'test')
+	train_dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/', dset = 'train')
+	test_dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/', dset = 'test')
 	print('made dataset')
 	sys.stdout.flush()
 	train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
