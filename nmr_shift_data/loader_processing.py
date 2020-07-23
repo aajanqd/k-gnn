@@ -20,7 +20,7 @@ class knnGraph(InMemoryDataset):
         super(knnGraph, self).__init__(root, dset, transform, pre_transform, pre_filter)
         self.type = type
         self.data, self.slices = torch.load(self.processed_paths[0])
-        self.dset = dset
+        # self.dset = dset
 
     @property
     def raw_file_names(self):
