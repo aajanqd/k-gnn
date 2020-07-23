@@ -75,5 +75,9 @@ def process(infile):
 		print(t.x.size())
 		if i >5:
 			break
+	for i, t in enumerate(test_loader):
+		print(t.x.size())
+		if i >5:
+			break
 
 process('/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle')
