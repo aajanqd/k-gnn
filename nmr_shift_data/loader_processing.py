@@ -58,7 +58,7 @@ def process(infile):
 	ds = graph_conv_many_nuc_util.make_datasets({'filename' : infile}, dataset_hparams)
 	print('made datasets')
 	sys.stdout.flush()
-	torch.save(ds_train, '/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/raw/temp.pt')
+	torch.save(ds, '/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/raw/temp.pt')
 	print('saved temp files')
 	sys.stdout.flush()
 	dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/')
