@@ -63,8 +63,12 @@ def process(infile):
 	sys.stdout.flush()
 	dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/')
 	print('made dataset', type(dataset), len(dataset))
+	split = int(len(dataset)*0.8)
+	train_dataset = dataset[:split]
+	test_dataset = dataset[split:]
 	sys.stdout.flush()
-	train_loader = DataLoader(dataset, batch_size=64, num_workers=1)
+	train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
+	test_loader = DataLoader(test_dataset, batch_size=64, num_workers=1)
 	print('created data loader')
 
 	for i, t in enumerate(train_loader):
