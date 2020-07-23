@@ -26,6 +26,9 @@ class knnGraph(InMemoryDataset, set):
     		return 'train_temp.pt'
     	elif set == 'test':
     		return 'test_temp.pt'
+    	else:
+    		print('not working')
+    		sys.stdout.flush()
 
     @property
     def processed_file_names(self):
@@ -33,6 +36,9 @@ class knnGraph(InMemoryDataset, set):
     		return 'train.pt'
     	elif set == 'test':
     		return 'test.pt'
+    	else:
+    		print('not working')
+    		sys.stdout.flush()
     
     def download(self):
         pass
