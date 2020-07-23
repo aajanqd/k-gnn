@@ -49,12 +49,8 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
         #pred_val is a dictionary containing key value pairs of atom numbers and chem shift vals
         vals = np.zeros((DATA_N, 1), dtype=np.float32)
         for pn in range(self.PRED_N):
-            print(type(pred_val))
-            if type(pred_val == list):
-                print(type(pred_val[0]))
             for k, v in pred_val[pn].items():
                 vals[int(k), pn] = v
-        print('printing vals params', type(vals), vals.shape, vals)
 
         v = (vect_feat, edge_index, edge_attr, vals)
 

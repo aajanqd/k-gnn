@@ -1,5 +1,4 @@
 import rdkit
-
 import os.path as osp
 import graph_conv_many_nuc_util
 from graph_conv_many_nuc_util import move
@@ -11,14 +10,17 @@ from torch_scatter import scatter_mean
 from torch_geometric.datasets import QM9
 import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
-from torch_geometric.data import DataLoader
+import DataLoader
 import sys
-
-train = torch.load('train.pt')
-test = torch.load('test.pt')
+from file import process
 
 print("done importing")
 sys.stdout.flush()
+
+infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
+                                                               
+train_loader, test_loader = process(infile)
+
 
 class Net(torch.nn.Module):
     def __init__(self):
@@ -40,7 +42,7 @@ class Net(torch.nn.Module):
         self.fc3 = torch.nn.Linear(64, 1)
 
     def forward(self, data):
-        x, edge_index, edge_attr = data[0][0], data[1][0], data[2][0]
+        x, edge_index, edge_attr = data[0], data[1], data[2]
         x, edge_index, edge_attr = x.to(device), edge_index.to(device), edge_attr.to(device)
         # print(x.size(), edge_index.size(), edge_attr.size())
         # sys.stdout.flush()
