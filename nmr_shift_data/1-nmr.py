@@ -14,24 +14,11 @@ from torch_geometric.nn import NNConv
 from torch_geometric.data import DataLoader
 import sys
 
+train = torch.load('train.pt')
+test = torch.load('test.pt')
+
 print("done importing")
 sys.stdout.flush()
-
-infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
-
-dataset_hparams = graph_conv_many_nuc_util.DEFAULT_DATA_HPARAMS
-ds_train, ds_test = graph_conv_many_nuc_util.make_datasets({'filename' : infile}, dataset_hparams)
-                                                               
-train_loader = torch.utils.data.DataLoader(ds_train, batch_size=64, shuffle=True, pin_memory=True)
-test_loader = torch.utils.data.DataLoader(ds_test, batch_size=64, shuffle=True, pin_memory=True)
-
-# for i, data in enumerate(train_loader):
-#     x, edge_index, edge_attr = data[0], data[1], data[2]
-#     print(x.size(), edge_index.size(), edge_attr.size())
-#     sys.stdout.flush()
-#     if i >=5:
-#         break
-
 
 class Net(torch.nn.Module):
     def __init__(self):
