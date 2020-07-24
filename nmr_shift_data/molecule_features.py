@@ -12,6 +12,7 @@ from rdkit.Chem import AllChem  # noqa
 from rdkit.Chem.rdchem import HybridizationType
 from rdkit.Chem.rdchem import BondType
 from util import get_nos_coords
+import sys
 
 def coalesce(index, value):
     n = index.max().item() + 1
@@ -140,6 +141,9 @@ def get_edge_attr_and_ind(m):
     edge_attr = torch.tensor([single, double, triple, aromatic],
                              dtype=torch.float).t().contiguous()
 
+    print(edge_index.size(), edge_attr.size())
+    sys.stdout.flush()
+    
     assert tuple(edge_index.size()) == (2,140)
     assert tuple(edge_attr.size()) == (4,140)
 
