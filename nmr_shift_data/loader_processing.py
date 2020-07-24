@@ -70,12 +70,12 @@ def process(infile):
     split = int(len(dataset)*0.8)
     train_dataset = dataset[:split]
     test_dataset = dataset[split:]
-    print(train_dataset.data)
-    sys.stdout.flush()
+    # print(train_dataset.data)
+    # sys.stdout.flush()
 
     train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
     test_loader = DataLoader(test_dataset, batch_size=64, num_workers=1)
-    print('created data loaders')
-    sys.stdout.flush()
+    # print('created data loaders')
+    # sys.stdout.flush()
 
     return train_loader, test_loader
