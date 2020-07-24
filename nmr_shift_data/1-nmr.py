@@ -28,6 +28,11 @@ train_loader, test_loader = process(infile)
 
 print('train loaders in 1-nmr')
 sys.stdout.flush()
+print(type(train_loader))
+sys.stdout.flush()
+print(type(train_loader[0]))
+sys.stdout.flush()
+
 
 class Net(torch.nn.Module):
     def __init__(self):
