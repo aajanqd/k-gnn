@@ -188,6 +188,10 @@ def feat_tensor_atom(mol,
 
         atom_features.append(atom_feature)
 
+    z = [0]*len(atom_features[0])
+    while len(atom_features) < 64:
+        atom_features.append(z)
+
     #atom features is a list of lists; inner list represents one atom and contains atom features
     # print(torch.Tensor(atom_features).size())
     return torch.Tensor(atom_features)
