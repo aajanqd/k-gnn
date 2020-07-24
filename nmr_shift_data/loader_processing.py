@@ -70,11 +70,11 @@ def process(infile):
     print('created data loaders')
     sys.stdout.flush()
 
-    for i, t in enumerate(train_loader):
-        print(type(t.x), t.x.size(), t.x, type(t.y))
-        # print(type(t.x), type(t.y))
-        sys.stdout.flush()
-        if i >5:
-            break
+    # for i, t in enumerate(train_loader):
+    #     print(type(t.x), t.x.size(), t.x, type(t.y))
+    #     # print(type(t.x), type(t.y))
+    #     sys.stdout.flush()
+    #     if i >5:
+    #         break
 
     return train_loader, test_loader
