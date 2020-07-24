@@ -107,7 +107,8 @@ for epoch in range(1, 301):
             'Test MAE: {:.7f}, '
             # 'Test MAE norm: {:.7f}'.format(epoch, lr, loss,
             #                                test_error,
-            #                                test_error / std[target].cuda()))
+            #                                test_error / std[target].cuda())
+            )
         sys.stdout.flush()
     else:
         print('Epoch: {:03d}'.format(epoch))
