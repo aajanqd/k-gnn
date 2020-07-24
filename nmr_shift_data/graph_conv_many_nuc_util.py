@@ -416,5 +416,3 @@ def create_uncertain_validate_func(tgt_nucs):
 
         return res
     return val_func
-
-

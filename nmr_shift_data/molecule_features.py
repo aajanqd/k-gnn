@@ -12,7 +12,6 @@ from rdkit.Chem import AllChem  # noqa
 from rdkit.Chem.rdchem import HybridizationType
 from rdkit.Chem.rdchem import BondType
 from util import get_nos_coords
-import sys
 
 def coalesce(index, value):
     n = index.max().item() + 1
@@ -129,23 +128,12 @@ def get_edge_attr_and_ind(m):
         aromatic.append(1 if bond_type == BondType.AROMATIC else 0)
         aromatic.append(aromatic[-1])
 
-    for i in range(140-2*m.GetNumBonds()):
-        row.append(0)
-        col.append(0)
-        single.append(0)
-        double.append(0)
-        triple.append(0)
-        aromatic.append(0)
-
     edge_index = torch.tensor([row, col], dtype=torch.long)
     edge_attr = torch.tensor([single, double, triple, aromatic],
                              dtype=torch.float).t().contiguous()
 
-    # print(edge_index.size(), edge_attr.size())
-    # sys.stdout.flush()
-
-    assert tuple(edge_index.size()) == (2,140)
-    assert tuple(edge_attr.size()) == (140,4)
+    # assert tuple(edge_index.size()) == (2,140)
+    # assert tuple(edge_attr.size()) == (4,140)
 
     # edge_index, edge_attr = coalesce(edge_index, edge_attr)
 
@@ -155,12 +143,9 @@ def feat_mol_adj(mol, edge_weighted=True, add_identity=False,
                  norm_adj=False, split_weights = None):
     """
     Compute the adjacency matrix for this molecule
-
     If split-weights == [1, 2, 3] then we create separate adj matrices for those
     edge weights
-
     NOTE: We do not kekulize the molecule, we assume that has already been done
-
     """
     
     atomic_nos, adj = mol_to_nums_adj(mol) #returns atomic numbers and adj matx
@@ -201,4 +186,3 @@ def feat_mol_adj(mol, edge_weighted=True, add_identity=False,
             res.append(adj_i)
         adj = torch.stack(res)
     return adj
-
