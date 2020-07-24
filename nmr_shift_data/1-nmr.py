@@ -12,10 +12,18 @@ import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
 import sys
 from loader_processing import process
+from dataloader import DataLoader
 
-infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
-                                                               
-train_loader, test_loader = process(infile)
+# infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
+infile = '/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/processed/whole.pt'
+dataset = torch.load(infile)
+
+split = int(len(dataset)*0.8)
+train_dataset = dataset[:split]
+test_dataset = dataset[split:]
+
+train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
+test_loader = DataLoader(test_dataset, batch_size=64, num_workers=1)
 
 print('train loaders in 1-nmr')
 sys.stdout.flush()
@@ -50,7 +58,7 @@ class Net(torch.nn.Module):
         x = F.elu(self.fc1(x))
         x = F.elu(self.fc2(x))
         x = self.fc3(x)
-        print('This is the size of the net output: ' + str(x.view(-1)))
+        print('This is the size of the net output: ' + str(x.view(-1).size()))
         sys.stdout.flush()
         return x.view(-1)
 
