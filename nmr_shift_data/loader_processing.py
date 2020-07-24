@@ -33,8 +33,6 @@ class knnGraph(InMemoryDataset):
 
     def process(self):
         raw_data_list = torch.load(self.raw_paths[0])
-        print('raw_data_list type: ' + str(type(raw_data_list)) + ';', 'raw_data_list type: ' + str(type(raw_data_list[0])) + ';')
-        sys.stdout.flush()
         data_list = [
             Data(
                 x=d[0],
