@@ -64,7 +64,7 @@ def process(infile):
     sys.stdout.flush()
 
     dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/')
-    print('made dataset', type(dataset), len(dataset))
+    print('made dataset', type(dataset), len(dataset), dataset.data)
     sys.stdout.flush()
 
     split = int(len(dataset)*0.8)
