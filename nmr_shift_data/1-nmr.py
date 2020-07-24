@@ -30,7 +30,7 @@ print('train loaders in 1-nmr')
 sys.stdout.flush()
 print(type(train_loader))
 sys.stdout.flush()
-for i, (data,y) in enumerate(dataloader):
+for i, (data,y) in enumerate(train_loader):
 	print(i)
 	if i > 5:
 		break
