@@ -95,7 +95,7 @@ def train(epoch):
     for data in train_loader:
         data = data.to(device)
         optimizer.zero_grad()
-        print('TARGET DATA TYPE: ' + str(type(data.y)) + ' TARGET DATA SHAPE: ' str(data.y.size()))
+        print('TARGET DATA TYPE: ' + str(type(data.y)) + ' TARGET DATA SHAPE: ' + str(data.y.size()))
         sys.stdout.flush()
         loss = F.mse_loss(model(data), data.y)
         loss.backward()
