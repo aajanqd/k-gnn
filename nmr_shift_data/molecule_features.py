@@ -141,8 +141,8 @@ def get_edge_attr_and_ind(m):
     edge_attr = torch.tensor([single, double, triple, aromatic],
                              dtype=torch.float).t().contiguous()
 
-    print(edge_index.size(), edge_attr.size())
-    sys.stdout.flush()
+    # print(edge_index.size(), edge_attr.size())
+    # sys.stdout.flush()
 
     assert tuple(edge_index.size()) == (2,140)
     assert tuple(edge_attr.size()) == (140,4)

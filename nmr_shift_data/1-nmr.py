@@ -30,8 +30,10 @@ print('train loaders in 1-nmr')
 sys.stdout.flush()
 print(type(train_loader))
 sys.stdout.flush()
-print(type(train_loader[0]))
-sys.stdout.flush()
+for i, data in enumerate train_loader:
+	print(i)
+	if i > 5:
+		break
 
 
 class Net(torch.nn.Module):
