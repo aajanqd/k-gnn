@@ -71,4 +71,9 @@ def process(infile):
 	test_loader = DataLoader(test_dataset, batch_size=64, num_workers=1)
 	print('created data loaders')
 	sys.stdout.flush()
+
+    for i, t in enumerate(train_loader):
+        print(type(t.x), t.x.shape, type(t.y), t.y.shape)
+        if i >5:
+            break
 	return train_loader, test_loader
