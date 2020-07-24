@@ -64,13 +64,15 @@ def train(epoch):
     model.train()
     loss_all = 0
 
+    # note that the number of atoms exceeds the number of carbons, and therefore there will be many zeros
+    # 
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-        print(type(data.y), type(data.y[0]), len(data.y), data.y[0].shape, data.y[0])
-        sys.stdout.flush()
+        # print(type(data.y), type(data.y[0]), len(data.y), data.y[0].shape, data.y[0])
+        # sys.stdout.flush()
         # print(torch.FloatTensor(data.y).size(), torch.FloatTensor(data.y))
-        loss = F.mse_loss(model(data), torch.FloatTensor(data.y))
+        loss = F.mse_loss(model(data), data.y)
         loss.backward()
         loss_all += loss * 64
         optimizer.step()
