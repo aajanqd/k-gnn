@@ -40,13 +40,13 @@ class Net(torch.nn.Module):
         nn2 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv2 = NNConv(M_in, M_out, nn2)
 
-        M_in, M_out = M_out, 256
+        M_in, M_out = M_out, 512
         nn3 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv3 = NNConv(M_in, M_out, nn3)
 
-        self.fc1 = torch.nn.Linear(256, 128)
-        self.fc2 = torch.nn.Linear(128, 64)
-        self.fc3 = torch.nn.Linear(64, 1)
+        self.fc1 = torch.nn.Linear(512, 256)
+        self.fc2 = torch.nn.Linear(256, 128)
+        self.fc3 = torch.nn.Linear(128, 64)
 
     def forward(self, data):
         x = data.x
@@ -59,7 +59,7 @@ class Net(torch.nn.Module):
         x = F.elu(self.fc1(x))
         x = F.elu(self.fc2(x))
         x = self.fc3(x)
-        print('This is the size of the net output: ' + str(x.view(-1).size()))
+        print('This is the size of the net output: ' + str(x.size()))
         sys.stdout.flush()
         return x.view(-1)
 
