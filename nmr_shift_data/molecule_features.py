@@ -143,9 +143,9 @@ def get_edge_attr_and_ind(m):
 
     print(edge_index.size(), edge_attr.size())
     sys.stdout.flush()
-    
+
     assert tuple(edge_index.size()) == (2,140)
-    assert tuple(edge_attr.size()) == (4,140)
+    assert tuple(edge_attr.size()) == (140,4)
 
     # edge_index, edge_attr = coalesce(edge_index, edge_attr)
 
