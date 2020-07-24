@@ -50,6 +50,8 @@ class Net(torch.nn.Module):
         x = F.elu(self.fc1(x))
         x = F.elu(self.fc2(x))
         x = self.fc3(x)
+        print('This is the size of the net output: ' + str(x.view(-1)))
+        sys.stdout.flush()
         return x.view(-1)
 
 
