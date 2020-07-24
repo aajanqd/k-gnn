@@ -9,6 +9,7 @@ from torch_geometric.datasets import QM9
 import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
 from torch_geometric.data import DataLoader
+import sys
 
 class MyFilter(object):
     def __call__(self, data):
@@ -94,6 +95,8 @@ def train(epoch):
     for data in train_loader:
         data = data.to(device)
         optimizer.zero_grad()
+        print('TARGET DATA TYPE: ' + str(type(data.y)))
+        sys.stdout.flush()
         loss = F.mse_loss(model(data), data.y)
         loss.backward()
         loss_all += loss * data.num_graphs
