@@ -73,7 +73,7 @@ def process(infile):
     sys.stdout.flush()
 
     for i, t in enumerate(train_loader):
-        print(type(t.x), t.x.shape, type(t.y), t.y.shape)
+        print(type(t.x), type(t.y))
         # print(type(t.x), type(t.y))
         sys.stdout.flush()
         if i >5:
