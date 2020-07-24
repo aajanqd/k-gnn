@@ -104,11 +104,7 @@ for epoch in range(1, 301):
         best_val_error = val_error
         print(
             'Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}'
-            'Test MAE: {:.7f}, '
-            # 'Test MAE norm: {:.7f}'.format(epoch, lr, loss,
-            #                                test_error,
-            #                                test_error / std[target].cuda())
-            )
+            'Test MAE: {:.7f}, ')
         sys.stdout.flush()
     else:
         print('Epoch: {:03d}'.format(epoch))
