@@ -41,7 +41,7 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
         #f_vect is a 2d tensor containing atom features; inner tensors represent one atom and contain features
         #shape of f_vect is num_atomsxnum_features
         f_vect = atom_features.feat_tensor_atom(mol, conf_idx=conf_idx, **self.feat_vert_args)                                 
-        DATA_N = vect_feat.shape[0] #number of atoms
+        DATA_N = f_vect.shape[0] #number of atoms
         vect_feat = np.zeros((self.MAX_N, f_vect.shape[1]), dtype=np.float32)
         vect_feat[:DATA_N] = f_vect
         
