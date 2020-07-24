@@ -76,4 +76,5 @@ def process(infile):
         print(type(t.x), t.x.shape, type(t.y), t.y.shape)
         if i >5:
             break
+    
 	return train_loader, test_loader
