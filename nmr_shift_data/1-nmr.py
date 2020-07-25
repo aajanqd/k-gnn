@@ -93,14 +93,11 @@ def test(loader):
         mask = torch.FloatTensor(data.mask).to(device)
         error += loss_functions.MAE_loss(model(data), target, mask)  # MAE
         total += 1
-    return error / total
+    return float(error) / total
 
 for epoch in range(1, 301):
     lr = scheduler.optimizer.param_groups[0]['lr']
-
     avg_train_loss = train(epoch)
-    running_avg_training_losses.append(avg_train_loss)
-
     test_error = test(test_loader)
     scheduler.step()
 
