@@ -104,6 +104,5 @@ for epoch in range(1, 301):
     test_error = test(test_loader)
     scheduler.step()
 
-    print(
-        'Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, loss,test_error))
+    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, loss,test_error))
     sys.stdout.flush()
