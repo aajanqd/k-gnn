@@ -40,19 +40,18 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
         
         #f_vect is a 2d tensor containing atom features; inner tensors represent one atom and contain features
         #shape of f_vect is num_atomsxnum_features
-        f_vect = atom_features.feat_tensor_atom(mol, conf_idx=conf_idx, **self.feat_vert_args)                                 
-        DATA_N = f_vect.shape[0] #number of atoms
-        vect_feat = np.zeros((self.MAX_N, f_vect.shape[1]), dtype=np.float32)
-        vect_feat[:DATA_N] = f_vect
+        f_vect = atom_features.feat_tensor_atom(mol, conf_idx=conf_idx, **self.feat_vert_args)
                         
         edge_index, edge_attr = molecule_features.get_edge_attr_and_ind(mol)
 
         #pred_val is a dictionary containing key value pairs of atom numbers and chem shift vals
         vals = np.zeros((self.MAX_N, 1), dtype=np.float32)
+        mask = np.zeros((self.MAX_N, 1), dtype=np.float32)
         for pn in range(self.PRED_N):
             for k, v in pred_val[pn].items():
                 vals[int(k), pn] = v
+                mask[int(k), pn] = 1.0
 
-        v = (f_vect, edge_index, edge_attr, vals)
+        v = (f_vect, edge_index, edge_attr, mask, vals)
 
         return v

@@ -12,6 +12,7 @@ import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
 import sys
 from loader_processing import process
+import loss_functions
 
 infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
                                                                
@@ -65,47 +66,44 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, pa
 def train(epoch):
     model.train()
     loss_all = 0
+    total = 0
 
     # note that the number of atoms exceeds the number of carbons, and therefore there will be many zeros
-    # 
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-        # print(type(data.y), type(data.y[0]), len(data.y), data.y[0].shape, data.y[0])
-        # sys.stdout.flush()
-        # print(torch.FloatTensor(data.y).size(), torch.FloatTensor(data.y))
-        loss = F.mse_loss(model(data), torch.FloatTensor(data.y).to(device))
+        target =  torch.FloatTensor(data.y).to(device)
+        mask = torch.FloatTensor(data.mask).to(device)
+        loss = loss_functions.MSE_loss(model(data), target, mask)
         loss.backward()
-        loss_all += loss * 64
+        loss_all += loss
         optimizer.step()
-    return loss_all / len(train_loader.dataset)
+        total += 1
+    return float(loss_all) / total
 
 
 def test(loader):
     model.eval()
     error = 0
+    total = 0
 
     for data in loader:
         data = data.to(device)
-        error += ((model(data) * std[target].cuda()) -
-                  (data[5] * std[target].cuda())).abs().sum().item()  # MAE
-    return error / len(loader.dataset)
+        target =  torch.FloatTensor(data.y).to(device)
+        mask = torch.FloatTensor(data.mask).to(device)
+        error += loss_functions.MAE_loss(model(data), target, mask)  # MAE
+        total += 1
+    return error / total
 
-
-best_val_error = None
 for epoch in range(1, 301):
     lr = scheduler.optimizer.param_groups[0]['lr']
-    loss = train(epoch)
-    # val_error = test(val_loader)
-    # scheduler.step(val_error)
 
-    if epoch%50==0:
-        test_error = test(test_loader)
-        best_val_error = val_error
-        print(
-            'Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}'
-            'Test MAE: {:.7f}, ')
-        sys.stdout.flush()
-    else:
-        print('Epoch: {:03d}'.format(epoch))
-        sys.stdout.flush()
+    avg_train_loss = train(epoch)
+    running_avg_training_losses.append(avg_train_loss)
+
+    test_error = test(test_loader)
+    scheduler.step()
+
+    print(
+        'Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, loss,test_error))
+    sys.stdout.flush()
