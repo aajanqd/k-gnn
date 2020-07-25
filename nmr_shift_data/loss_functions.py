@@ -3,8 +3,8 @@ import torch.nn as nn
 import sys
 
 def MSE_loss(x,y,mask):
-	print(x.shape, mask.shape)
-	sys.stdout.flush()
+    print(x.shape, mask.shape)
+    sys.stdout.flush()
     x_masked = x[mask>0].reshape(-1, 1)
     y_masked = y[mask>0].reshape(-1, 1)
     return nn.MSELoss(x_masked, y_masked)
