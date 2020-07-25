@@ -38,7 +38,8 @@ class knnGraph(InMemoryDataset):
                 x=d[0],
                 edge_index=d[1],
                 edge_attr=d[2],
-                y=d[3],
+                mask=d[3],
+                y=d[4],
                 ) for d in raw_data_list
         ]
 
