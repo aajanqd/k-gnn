@@ -39,8 +39,8 @@ class Net(torch.nn.Module):
         self.conv3 = NNConv(M_in, M_out, nn3)
 
         M_in, M_out = M_out, 512
-        nn3 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
-        self.conv3 = NNConv(M_in, M_out, nn3)
+        nn4 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
+        self.conv4 = NNConv(M_in, M_out, nn4)
 
         self.fc1 = torch.nn.Linear(512, 256)
         self.fc2 = torch.nn.Linear(256, 128)
@@ -51,6 +51,7 @@ class Net(torch.nn.Module):
         x = F.elu(self.conv1(x, data.edge_index, data.edge_attr))
         x = F.elu(self.conv2(x, data.edge_index, data.edge_attr))
         x = F.elu(self.conv3(x, data.edge_index, data.edge_attr))
+        x = F.elu(self.conv4(x, data.edge_index, data.edge_attr))
 
         x = scatter_mean(x, data.batch, dim=0)
 
