@@ -80,9 +80,6 @@ def train(epoch):
 
         pred = model(data)
 
-        print("x, y, mask sizes" +str(pred.size())+str(target.size())+str(mask.size()))
-        sys.stdout.flush()
-
         loss = loss_functions.MSE_loss(pred, target, mask)
         loss.backward()
         loss_all += loss
@@ -98,9 +95,16 @@ def test(loader):
 
     for data in loader:
         data = data.to(device)
-        target =  torch.FloatTensor(data.y).to(device)
-        mask = torch.FloatTensor(data.mask).to(device)
-        error += loss_functions.MAE_loss(model(data), target, mask)  # MAE
+
+        target = torch.FloatTensor(data.y)
+        target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
+
+        mask = torch.FloatTensor(data.mask)
+        mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
+
+        pred = model(data)
+
+        error += loss_functions.MAE_loss(pred, target, mask)  # MAE
         total += 1
     return float(error) / total
 
