@@ -10,7 +10,7 @@ def MSE_loss(x,y,mask):
     return mse_loss(x_masked, y_masked)
 
 def MAE_loss(x,y,mask):
-    print("x, y, mask sizes: " +str(pred.size())+","+str(target.size())+","+str(mask.size()))
+    print("x, y, mask sizes: " +str(x.size())+","+str(y.size())+","+str(mask.size()))
     sys.stdout.flush()
     x_masked = x[mask>0]
     y_masked = y[mask>0]
