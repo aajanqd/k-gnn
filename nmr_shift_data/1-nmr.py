@@ -71,12 +71,12 @@ def train(epoch):
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-        print('target size before resize: '+ str(data.y.shape))
+        print('target size before resize: '+ str(torch.FloatTensor(data.y).size()))
         sys.stdout.flush()
         target =  torch.FloatTensor(data.y).reshape(4096,1).to(device) #64x64x1 -> 4096x1
         print('target size after resize: '+ str(target.size()))
         sys.stdout.flush()
-        print('mask size before resize: '+ str(data.mask.shape))
+        print('mask size before resize: '+ str(torch.FloatTensor(data.mask).size()))
         sys.stdout.flush()
         mask = torch.FloatTensor(data.mask).reshape(4096,1).to(device) #64x64x1 -> 4096x1
         print('mask size after resize: '+ str(mask.size()))
