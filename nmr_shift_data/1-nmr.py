@@ -53,7 +53,7 @@ class Net(torch.nn.Module):
         x = F.elu(self.fc1(x)) #4096x256
         x = F.elu(self.fc2(x)) #4096x128
         x = self.fc3(x) #4096x1
-        return x #4096x1
+        return x.flatten() #4096
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -73,13 +73,13 @@ def train(epoch):
         optimizer.zero_grad()
 
         target = torch.FloatTensor(data.y)
-        target = target.reshape(target.size()[0]*target.size()[1]).to(device)
+        target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
 
         mask = torch.FloatTensor(data.mask)
-        mask = mask.reshape(mask.size()[0]*mask.size()[1]).to(device)
+        mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
 
         pred = model(data)
-        
+
         loss = loss_functions.MSE_loss(pred, target, mask)
         loss.backward()
         loss_all += loss
