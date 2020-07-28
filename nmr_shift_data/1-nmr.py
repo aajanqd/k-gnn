@@ -80,7 +80,7 @@ def train(epoch):
 
         pred = model(data)
 
-        print("x, y, mask sizes" +str(pred)+str(target)+str(mask))
+        print("x, y, mask sizes" +str(pred.size())+str(targe.size())+str(mask.size()))
         sys.stdout.flush()
 
         loss = loss_functions.MSE_loss(pred, target, mask)
