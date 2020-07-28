@@ -74,7 +74,10 @@ def train(epoch):
         target =  torch.FloatTensor(data.y) #64x64x1 -> 4096x1
         print(target.size())
         sys.stdout.flush()
-        mask = torch.reshape(torch.FloatTensor(data.mask), (4069,1)).to(device) #64x64x1 -> 4096x1
+        mask = torch.FloatTensor(data.mask)
+        print(mask.size())
+        sys.stdout.flush()
+        # mask = torch.reshape(torch.FloatTensor(data.mask), (4069,1)).to(device) #64x64x1 -> 4096x1
         pred = model(data)
         if i == 1:
             print(pred.size())
