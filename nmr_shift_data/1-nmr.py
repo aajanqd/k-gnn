@@ -71,11 +71,14 @@ def train(epoch):
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-        target =  torch.reshape(torch.FloatTensor(data.y), (4069,1)).to(device) #64x64x1 -> 4096x1
+        target =  torch.FloatTensor(data.y) #64x64x1 -> 4096x1
+        print(target.size())
+        sys.stdout.flush()
         mask = torch.reshape(torch.FloatTensor(data.mask), (4069,1)).to(device) #64x64x1 -> 4096x1
         pred = model(data)
         if i == 1:
             print(pred.size())
+            sys.stdout.flush()
         loss = loss_functions.MSE_loss(pred, target, mask)
         loss.backward()
         loss_all += loss
