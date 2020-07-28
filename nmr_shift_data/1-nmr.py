@@ -71,7 +71,7 @@ def train(epoch):
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-        target =  torch.FloatTensor(data.y) #64x64x1 -> 4096x1
+        target =  torch.FloatTensor(data.y).reshape(4096,1) #64x64x1 -> 4096x1
         print(target.size())
         sys.stdout.flush()
         mask = torch.FloatTensor(data.mask)
