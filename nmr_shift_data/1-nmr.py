@@ -71,20 +71,15 @@ def train(epoch):
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-        # print('target size before resize: '+ str(torch.FloatTensor(data.y).size()))
-        # sys.stdout.flush()
-        # print('mask size before resize: '+ str(torch.FloatTensor(data.mask).size()))
-        # sys.stdout.flush()
-        if torch.FloatTensor(data.y).size()[0] == 64:
-            target = torch.FloatTensor(data.y).reshape(4096,1).to(device) #64x64x1 -> 4096x1
-            mask = torch.FloatTensor(data.mask).reshape(4096,1).to(device) #64x64x1 -> 4096x1
-        else:
-            target = torch.FloatTensor(data.y).reshape(1664,1).to(device) #64x64x1 -> 4096x1
-            mask = torch.FloatTensor(data.mask).reshape(1664,1).to(device) #64x64x1 -> 4096x1
+
+        target = torch.FloatTensor(data.y)
+        target = target.reshape(target.size()[0]*target.size()[1]).to(device)
+
+        mask = torch.FloatTensor(data.mask)
+        mask = mask.reshape(mask.size()[0]*mask.size()[1]).to(device)
+
         pred = model(data)
-        # if i == 1:
-        #     print(pred.size())
-        #     sys.stdout.flush()
+        
         loss = loss_functions.MSE_loss(pred, target, mask)
         loss.backward()
         loss_all += loss

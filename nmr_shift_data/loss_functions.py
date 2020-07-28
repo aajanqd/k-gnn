@@ -3,13 +3,13 @@ from torch.nn.functional import mse_loss
 import sys
 
 def MSE_loss(x,y,mask):
-    x_masked = x[mask>0].reshape(-1, 1)
-    y_masked = y[mask>0].reshape(-1, 1)
+    x_masked = x[mask>0]
+    y_masked = y[mask>0]
     return mse_loss(x_masked, y_masked)
 
 def MAE_loss(x,y,mask):
-    x_masked = x[mask>0].reshape(-1, 1)
-    y_masked = y[mask>0].reshape(-1, 1)
-    l = y[mask>0].reshape(-1).size()[0]
+    x_masked = x[mask>0]
+    y_masked = y[mask>0]
+    l = y[mask>0].size()[0]
     MAE = float(abs(x_masked-y_masked).sum()/l)
     return MAE
