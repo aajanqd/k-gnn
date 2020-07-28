@@ -104,7 +104,6 @@ def feat_tensor_atom(mol,
                      feat_atomicno = True, feat_pos=True, 
                      feat_atomicno_onehot=[1, 6, 7, 8, 9], 
                      feat_valence=True, aromatic=True, hybridization=True, 
-                     
                      partial_charge=True, formal_charge=True, r_covalent=True,
                      r_vanderwals=True, default_valence=True, rings=False, 
                      total_valence_onehot=False, 

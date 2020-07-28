@@ -40,20 +40,20 @@ class Net(torch.nn.Module):
 
         self.fc1 = torch.nn.Linear(512, 256)
         self.fc2 = torch.nn.Linear(256, 128)
-        self.fc3 = torch.nn.Linear(128, 64)
+        self.fc3 = torch.nn.Linear(128, 1) #64x64
 
     def forward(self, data):
-        x = data.x
-        x = F.elu(self.conv1(x, data.edge_index, data.edge_attr))
-        x = F.elu(self.conv2(x, data.edge_index, data.edge_attr))
-        x = F.elu(self.conv3(x, data.edge_index, data.edge_attr))
+        x = data.x #4096x37
+        x = F.elu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
+        x = F.elu(self.conv2(x, data.edge_index, data.edge_attr)) #4096x256
+        x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
 
-        x = scatter_mean(x, data.batch, dim=0)
+        # x = scatter_mean(x, data.batch, dim=0) #4096x512 -> 64x512 (aggregates across molecules)
 
-        x = F.elu(self.fc1(x))
-        x = F.elu(self.fc2(x))
-        x = self.fc3(x)
-        return x.unsqueeze(-1)
+        x = F.elu(self.fc1(x)) #4096x256
+        x = F.elu(self.fc2(x)) #4096x128
+        x = self.fc3(x) #4096x1
+        return x #4096x1
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -61,7 +61,6 @@ model = Net().to(device)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, patience=5, min_lr=0.00001)
-
 
 def train(epoch):
     model.train()
@@ -72,9 +71,12 @@ def train(epoch):
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-        target =  torch.FloatTensor(data.y).to(device)
-        mask = torch.FloatTensor(data.mask).to(device)
-        loss = loss_functions.MSE_loss(model(data), target, mask)
+        target =  torch.reshape(torch.FloatTensor(data.y), (4069,1)).to(device) #64x64x1 -> 4096x1
+        mask = torch.reshape(torch.FloatTensor(data.mask), (4069,1)).to(device) #64x64x1 -> 4096x1
+        pred = model(data)
+        if i == 1:
+            print(pred.size())
+        loss = loss_functions.MSE_loss(pred, target, mask)
         loss.backward()
         loss_all += loss
         optimizer.step()
