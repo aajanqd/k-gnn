@@ -110,6 +110,7 @@ def test(loader):
 
 for epoch in range(1, 301):
     # lr = scheduler.optimizer.param_groups[0]['lr']
+    lr = 0.001
     avg_train_loss = train(epoch)
     test_error = test(test_loader)
     # scheduler.step(test_error)
