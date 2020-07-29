@@ -44,7 +44,7 @@ class Net(torch.nn.Module):
 
         self.fc1 = torch.nn.Linear(1024, 512)
         self.fc2 = torch.nn.Linear(512, 128)
-        self.fc3 = torch.nn.Linear(126, 1) #64x64
+        self.fc3 = torch.nn.Linear(128, 1) #64x64
 
     def forward(self, data):
         x = data.x #4096x37
