@@ -269,8 +269,9 @@ def generic_runner(net, optimizer, scheduler, criterion,
                                  return_pred=True, desc='validate')
             for metric_name, metric_val in validate_func(test_res).items():
                 writer.add_scalar(metric_name, metric_val, epoch_i)
-                print(metric_name, metric_val)
-                sys.stdout.flush()
+                if (metric_name == '13C/test_mean_abs_err') or (metric_name == '13C/test_abs_err_90'):
+                    print(metric_name, metric_val)
+                    sys.stdout.flush()
             
             
         if checkpoint_func is not None:

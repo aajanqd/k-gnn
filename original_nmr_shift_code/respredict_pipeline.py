@@ -33,7 +33,7 @@ DATASET_DIR = "/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline
 td = lambda x : os.path.join(DATASET_DIR, x)
 
 
-SPECT_SET = '1H' # or '13C'
+SPECT_SET = '13C' # or '1H'
 
 TENSORBOARD_DIR = f"logs.{SPECT_SET}"
 
