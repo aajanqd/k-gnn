@@ -59,7 +59,7 @@ class Net(torch.nn.Module):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = Net().to(device)
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, patience=5, min_lr=0.00001)
 
 def train(epoch):
@@ -110,7 +110,7 @@ def test(loader):
 
 for epoch in range(1, 301):
     # lr = scheduler.optimizer.param_groups[0]['lr']
-    lr = 0.001
+    lr = 0.0001
     avg_train_loss = train(epoch)
     test_error = test(test_loader)
     # scheduler.step(test_error)
