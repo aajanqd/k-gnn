@@ -11,6 +11,8 @@ from tqdm import tqdm
 import time
 import numpy as np
 import pandas as pd
+import sys
+
 class ModelTrial():
     def __init__(self, training_loader, 
                  validation_loader, hparams):
@@ -260,13 +262,15 @@ def generic_runner(net, optimizer, scheduler, criterion,
             writer.add_scalar("train_loss", train_res['running_loss']/train_res['total_points'], 
                               epoch_i)
 
-        if epoch_i % 5 == 0:
+        if epoch_i % 1 == 0:
             net.eval()
             test_res = run_epoch(net, optimizer, criterion, dl_test, 
                                  pred_only = True, USE_CUDA=USE_CUDA, 
                                  return_pred=True, desc='validate')
             for metric_name, metric_val in validate_func(test_res).items():
                 writer.add_scalar(metric_name, metric_val, epoch_i)
+                print(metric_name, metric_val)
+                sys.stdout.flush()
             
             
         if checkpoint_func is not None:
