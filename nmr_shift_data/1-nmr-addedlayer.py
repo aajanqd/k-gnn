@@ -39,26 +39,26 @@ class Net(torch.nn.Module):
         self.conv3 = NNConv(M_in, M_out, nn3)
 
         M_in, M_out = M_out, 512
-        nn4 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
-        self.conv4 = NNConv(M_in, M_out, nn4)
+        nn3 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
+        self.conv4 = NNConv(M_in, M_out, nn3)
 
         self.fc1 = torch.nn.Linear(512, 256)
         self.fc2 = torch.nn.Linear(256, 128)
-        self.fc3 = torch.nn.Linear(128, 64)
+        self.fc3 = torch.nn.Linear(128, 1)
 
     def forward(self, data):
-        x = data.x
-        x = F.elu(self.conv1(x, data.edge_index, data.edge_attr))
-        x = F.elu(self.conv2(x, data.edge_index, data.edge_attr))
-        x = F.elu(self.conv3(x, data.edge_index, data.edge_attr))
-        x = F.elu(self.conv4(x, data.edge_index, data.edge_attr))
+        x = data.x #4096x37
+        x = F.elu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
+        x = F.elu(self.conv2(x, data.edge_index, data.edge_attr)) #4096x256
+        x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
+        x = F.elu(self.conv4(x, data.edge_index, data.edge_attr)) #4096x512
 
-        x = scatter_mean(x, data.batch, dim=0)
+        # x = scatter_mean(x, data.batch, dim=0) #4096x512 -> 64x512 (aggregates across molecules)
 
-        x = F.elu(self.fc1(x))
-        x = F.elu(self.fc2(x))
-        x = self.fc3(x)
-        return x.unsqueeze(-1)
+        x = F.elu(self.fc1(x)) #4096x256
+        x = F.elu(self.fc2(x)) #4096x128
+        x = self.fc3(x) #4096x1
+        return x.flatten() #4096
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -66,7 +66,6 @@ model = Net().to(device)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, patience=5, min_lr=0.00001)
-
 
 def train(epoch):
     model.train()
@@ -77,9 +76,16 @@ def train(epoch):
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-        target =  torch.FloatTensor(data.y).to(device)
-        mask = torch.FloatTensor(data.mask).to(device)
-        loss = loss_functions.MSE_loss(model(data), target, mask)
+
+        target = torch.FloatTensor(data.y)
+        target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
+
+        mask = torch.FloatTensor(data.mask)
+        mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
+
+        pred = model(data)
+
+        loss = loss_functions.MSE_loss(pred, target, mask)
         loss.backward()
         loss_all += loss
         optimizer.step()
@@ -94,9 +100,16 @@ def test(loader):
 
     for data in loader:
         data = data.to(device)
-        target =  torch.FloatTensor(data.y).to(device)
-        mask = torch.FloatTensor(data.mask).to(device)
-        error += loss_functions.MAE_loss(model(data), target, mask)  # MAE
+
+        target = torch.FloatTensor(data.y)
+        target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
+
+        mask = torch.FloatTensor(data.mask)
+        mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
+
+        pred = model(data)
+
+        error += loss_functions.MAE_loss(pred, target, mask)  # MAE
         total += 1
     return float(error) / total
 
