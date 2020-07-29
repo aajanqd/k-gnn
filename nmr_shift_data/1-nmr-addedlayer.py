@@ -39,12 +39,12 @@ class Net(torch.nn.Module):
         self.conv3 = NNConv(M_in, M_out, nn3)
 
         M_in, M_out = M_out, 512
-        nn3 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
-        self.conv4 = NNConv(M_in, M_out, nn3)
+        nn4 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
+        self.conv4 = NNConv(M_in, M_out, nn4)
 
         self.fc1 = torch.nn.Linear(512, 256)
         self.fc2 = torch.nn.Linear(256, 128)
-        self.fc3 = torch.nn.Linear(128, 1)
+        self.fc3 = torch.nn.Linear(128, 1) #64x64
 
     def forward(self, data):
         x = data.x #4096x37
