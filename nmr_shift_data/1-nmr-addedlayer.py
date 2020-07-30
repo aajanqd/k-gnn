@@ -16,11 +16,9 @@ import loss_functions
 
 infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
                                                                
-train_loader, test_loader = process(infile)
+train_loader, val_loader, test_loader = process(infile)
 
 print('train loaders in 1-nmr')
-sys.stdout.flush()
-print(train_loader)
 sys.stdout.flush()
 
 class Net(torch.nn.Module):
@@ -116,8 +114,16 @@ def test(loader):
 for epoch in range(1, 301):
     lr = scheduler.optimizer.param_groups[0]['lr']
     avg_train_loss = train(epoch)
+    val_error = test(val_loader)
+    scheduler.step(val_error)
     test_error = test(test_loader)
-    scheduler.step(test_error)
+
+    if best_val_error is None:
+        best_val_error = val_error
+    if val_error <= best_val_error:
+        best_val_error = val_error
+        print('VAL ERROR IMPROVED')
+        sys.stdout.flush()
 
     print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, test_error))
     sys.stdout.flush()

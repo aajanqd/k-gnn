@@ -57,16 +57,23 @@ def process(infile):
     ds = graph_conv_many_nuc_util.make_datasets({'filename' : infile}, dataset_hparams)
     print('made datasets')
     sys.stdout.flush()
+
     torch.save(ds, '/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/raw/temp.pt')
     print('saved temp files')
     sys.stdout.flush()
+
     dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/')
-    print('made dataset', type(dataset), len(dataset))
-    split = int(len(dataset)*0.8)
-    train_dataset = dataset[:split]
-    test_dataset = dataset[split:]
+    print('made dataset')
     sys.stdout.flush()
+
+    train_split = int(len(dataset)*0.6)
+    val_split = int(len(dataset)*0.6)
+    train_dataset = dataset[:train_split]
+    val_dataset = dataset[train_split:train_split+val_split]
+    test_dataset = dataset[train_split+val_split:]
+
     train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
+    val_loader = DataLoader(val_dataset, batch_size=64, num_workers=1)
     test_loader = DataLoader(test_dataset, batch_size=64, num_workers=1)
     print('created data loaders')
     sys.stdout.flush()
@@ -78,4 +85,4 @@ def process(infile):
     #     if i >5:
     #         break
 
-    return train_loader, test_loader
+    return train_loader, val_loader, test_loader

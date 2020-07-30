@@ -111,8 +111,16 @@ def test(loader):
 for epoch in range(1, 301):
     lr = scheduler.optimizer.param_groups[0]['lr']
     avg_train_loss = train(epoch)
+    val_error = test(val_loader)
+    scheduler.step(val_error)
     test_error = test(test_loader)
-    scheduler.step(test_error)
+
+    if best_val_error is None:
+        best_val_error = val_error
+    if val_error <= best_val_error:
+        best_val_error = val_error
+        print('VAL ERROR IMPROVED')
+        sys.stdout.flush()
 
     print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, test_error))
     sys.stdout.flush()
