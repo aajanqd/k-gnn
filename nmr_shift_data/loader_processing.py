@@ -67,7 +67,7 @@ def process(infile):
     sys.stdout.flush()
 
     train_split = int(len(dataset)*0.6)
-    val_split = int(len(dataset)*0.6)
+    val_split = int(len(dataset)*0.2)
     train_dataset = dataset[:train_split]
     val_dataset = dataset[train_split:train_split+val_split]
     test_dataset = dataset[train_split+val_split:]

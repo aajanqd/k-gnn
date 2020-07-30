@@ -185,6 +185,9 @@ def feat_tensor_atom(mol,
         if rings:
            atom_feature +=  [a.IsInRingSize(r) for r in range(3, 8)]
 
+        # electronegativities = {1:2.20, 6:2.55, 7:3.04, 8:3.44, 9:3.98, 15:2.19, 16:2.58, 17:3.16}
+        # atom_feature += [electronegativities[atomic_num]]
+
         atom_features.append(atom_feature)
 
     z = [0]*len(atom_features[0])

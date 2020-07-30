@@ -42,7 +42,7 @@ class Net(torch.nn.Module):
         self.fc2 = torch.nn.Linear(256, 128)
         self.fc3 = torch.nn.Linear(128, 1) #64x64
 
-        # self.initialize_weights()
+        self.initialize_weights()
 
     def forward(self, data):
         x = data.x #4096x37
@@ -57,9 +57,9 @@ class Net(torch.nn.Module):
         x = self.fc3(x) #4096x1
         return x.flatten() #4096
 
-    # def initialize_weights(self):
-    #     for m in self.modules():
-    #         torch.nn.init.kaiming_uniform_(m.weight)
+    def initialize_weights(self):
+        for m in self.modules():
+            torch.nn.init.kaiming_uniform_(m.weight)
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -118,7 +118,7 @@ for epoch in range(1, 301):
     lr = 0.0001
     avg_train_loss = train(epoch)
     val_error = test(val_loader)
-    scheduler.step(val_error)
+    # scheduler.step(val_error)
     test_error = test(test_loader)
 
     if best_val_error is None:
