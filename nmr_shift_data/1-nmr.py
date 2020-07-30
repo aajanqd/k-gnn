@@ -16,7 +16,7 @@ import loss_functions
 
 infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
                                                                
-train_loader, test_loader = process(infile)
+train_loader, val_loader, test_loader = process(infile)
 
 print('train loaders in 1-nmr')
 sys.stdout.flush()
@@ -42,6 +42,8 @@ class Net(torch.nn.Module):
         self.fc2 = torch.nn.Linear(256, 128)
         self.fc3 = torch.nn.Linear(128, 1) #64x64
 
+        # self.initialize_weights()
+
     def forward(self, data):
         x = data.x #4096x37
         x = F.elu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
@@ -54,6 +56,10 @@ class Net(torch.nn.Module):
         x = F.elu(self.fc2(x)) #4096x128
         x = self.fc3(x) #4096x1
         return x.flatten() #4096
+
+    # def initialize_weights(self):
+    #     for m in self.modules():
+    #         torch.nn.init.kaiming_uniform_(m.weight)
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
