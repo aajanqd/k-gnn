@@ -126,8 +126,7 @@ for epoch in range(1, 301):
     # scheduler.step(val_error)
     test_error = test(test_loader)
 
-    if best_val_error is None:
-        best_val_error = val_error
+    best_val_error = 100000000000000000
     if val_error <= best_val_error:
         best_val_error = val_error
         print('VAL ERROR IMPROVED')
