@@ -27,6 +27,7 @@ class Net(torch.nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         M_in, M_out = 37, 128
+
         nn1 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv1 = NNConv(M_in, M_out, nn1)
 
@@ -50,16 +51,20 @@ class Net(torch.nn.Module):
         x = F.elu(self.conv2(x, data.edge_index, data.edge_attr)) #4096x256
         x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
 
-        # x = scatter_mean(x, data.batch, dim=0) #4096x512 -> 64x512 (aggregates across molecules)
-
         x = F.elu(self.fc1(x)) #4096x256
         x = F.elu(self.fc2(x)) #4096x128
         x = self.fc3(x) #4096x1
         return x.flatten() #4096
-
+    
     def initialize_weights(self):
         for m in self.modules():
-            torch.nn.init.kaiming_uniform_(m.weight)
+#             print(m)
+            if isinstance(m, Sequential):
+                for elem in m:
+                    if isinstance(elem, Linear):
+                        torch.nn.init.kaiming_uniform_(elem.weight)
+            elif isinstance(m, Linear):
+                torch.nn.init.kaiming_uniform_(elem.weight)
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
