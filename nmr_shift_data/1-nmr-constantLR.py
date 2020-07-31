@@ -99,38 +99,39 @@ def train(epoch):
     return float(loss_all) / total
 
 
-def test(loader):
-    model.eval()
-    error = 0
-    total = 0
+# def test(loader):
+#     model.eval()
+#     error = 0
+#     total = 0
 
-    for data in loader:
-        data = data.to(device)
+#     for data in loader:
+#         data = data.to(device)
 
-        target = torch.FloatTensor(data.y)
-        target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
+#         target = torch.FloatTensor(data.y)
+#         target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
 
-        mask = torch.FloatTensor(data.mask)
-        mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
+#         mask = torch.FloatTensor(data.mask)
+#         mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
 
-        pred = model(data)
+#         pred = model(data)
 
-        error += loss_functions.MAE_loss(pred, target, mask)  # MAE
-        total += 1
-    return float(error) / total
+#         error += loss_functions.MAE_loss(pred, target, mask)  # MAE
+#         total += 1
+#     return float(error) / total
 
 for epoch in range(1, 301):
     lr = 0.0001
     avg_train_loss = train(epoch)
-    val_error = test(val_loader)
+    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}'.format(epoch, lr, avg_train_loss))
+    # val_error = test(val_loader)
     # scheduler.step(val_error)
-    test_error = test(test_loader)
+    # test_error = test(test_loader)
 
-    best_val_error = 100000000000000000
-    if val_error <= best_val_error:
-        best_val_error = val_error
-        print('VAL ERROR IMPROVED')
-        sys.stdout.flush()
+    # best_val_error = 100000000000000000
+    # if val_error <= best_val_error:
+    #     best_val_error = val_error
+    #     print('VAL ERROR IMPROVED')
+    #     sys.stdout.flush()
 
-    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, test_error))
-    sys.stdout.flush()
+    # print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, test_error))
+    # sys.stdout.flush()
