@@ -347,6 +347,8 @@ class GraphMatLayer(nn.Module):
         self.linlayers = nn.ModuleList() #list for linear transformations
         self.dropout = dropout #true or false
         self.dropout_layers = nn.ModuleList() #list for dropout 
+        # adding linear transformations to module list linlayers
+        # These are weight matrices
         for ll in range(GS):
             l = nn.Linear(input_feature_dim, output_feature_dim)
             l.bias.data.normal_(0.0, self.noise)

@@ -47,13 +47,27 @@ class Net(torch.nn.Module):
 
     def forward(self, data):
         x = data.x #4096x37
+        print('Initial x: '+str(x))
+        sys.stdout.flush()
         x = F.elu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
+        print('Conv1 x: '+str(x))
+        sys.stdout.flush()
         x = F.elu(self.conv2(x, data.edge_index, data.edge_attr)) #4096x256
+        print('Conv2 x: '+str(x))
+        sys.stdout.flush()
         x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
+        print('Conv3 x: '+str(x))
+        sys.stdout.flush()
 
         x = F.elu(self.fc1(x)) #4096x256
+        print('Linear1 x: '+str(x))
+        sys.stdout.flush()
         x = F.elu(self.fc2(x)) #4096x128
+        print('Linear2 x: '+str(x))
+        sys.stdout.flush()
         x = self.fc3(x) #4096x1
+        print('Final x: '+str(x))
+        sys.stdout.flush()
         return x.flatten() #4096
     
     def initialize_weights(self):
