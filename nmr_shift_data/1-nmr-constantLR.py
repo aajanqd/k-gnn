@@ -14,7 +14,7 @@ import sys
 from loader_processing import process
 import loss_functions
 
-torch.set_printoptions(profile="full")
+# torch.set_printoptions(profile="full")
 
 infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
                                                                
@@ -144,14 +144,14 @@ for epoch in range(1, 301):
     lr = 0.0001
     avg_train_loss = train(epoch)
     print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}'.format(epoch, lr, avg_train_loss))
-    val_error = test(val_loader)
-    scheduler.step(val_error)
-    test_error = test(test_loader)
+    # val_error = test(val_loader)
+    # # scheduler.step(val_error)
+    # test_error = test(test_loader)
 
-    if val_error <= best_val_error:
-        best_val_error = val_error
-        print('VAL ERROR IMPROVED')
-        sys.stdout.flush()
+    # if val_error <= best_val_error:
+    #     best_val_error = val_error
+    #     print('VAL ERROR IMPROVED')
+    #     sys.stdout.flush()
 
-    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, test_error))
-    sys.stdout.flush()
+    # print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, test_error))
+    # sys.stdout.flush()
