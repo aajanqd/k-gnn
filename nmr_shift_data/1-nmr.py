@@ -14,6 +14,8 @@ import sys
 from loader_processing import process
 import loss_functions
 
+# torch.set_printoptions(profile="full")
+
 infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
                                                                
 train_loader, val_loader, test_loader = process(infile)
@@ -47,13 +49,27 @@ class Net(torch.nn.Module):
 
     def forward(self, data):
         x = data.x #4096x37
+        # print('Initial x: '+str(x))
+        # sys.stdout.flush()
         x = F.elu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
+        # print('Conv1 x: '+str(x))
+        # sys.stdout.flush()
         x = F.elu(self.conv2(x, data.edge_index, data.edge_attr)) #4096x256
+        # print('Conv2 x: '+str(x))
+        # sys.stdout.flush()
         x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
+        # print('Conv3 x: '+str(x))
+        # sys.stdout.flush()
 
         x = F.elu(self.fc1(x)) #4096x256
+        # print('Linear1 x: '+str(x))
+        # sys.stdout.flush()
         x = F.elu(self.fc2(x)) #4096x128
+        # print('Linear2 x: '+str(x))
+        # sys.stdout.flush()
         x = self.fc3(x) #4096x1
+        # print('Final x: '+str(x))
+        # sys.stdout.flush()
         return x.flatten() #4096
     
     def initialize_weights(self):
@@ -70,7 +86,7 @@ class Net(torch.nn.Module):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = Net().to(device)
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, patience=5, min_lr=0.00001)
 
 def train(epoch):
@@ -125,17 +141,17 @@ def test(loader):
 best_val_error = 100000000000000000
 
 for epoch in range(1, 301):
-    lr = scheduler.optimizer.param_groups[0]['lr']
+    lr = 0.0001
     avg_train_loss = train(epoch)
+    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}'.format(epoch, lr, avg_train_loss))
     val_error = test(val_loader)
     scheduler.step(val_error)
-    test_error = test(test_loader)
+    # test_error = test(test_loader)
 
+    # if val_error <= best_val_error:
+    #     best_val_error = val_error
+    #     print('VAL ERROR IMPROVED')
+    #     sys.stdout.flush()
 
-    if val_error <= best_val_error:
-        best_val_error = val_error
-        print('VAL ERROR IMPROVED')
-        sys.stdout.flush()
-
-    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, test_error))
-    sys.stdout.flush()
+    # print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, test_error))
+    # sys.stdout.flush()

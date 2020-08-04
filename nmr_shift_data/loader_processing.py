@@ -69,7 +69,7 @@ def process(infile):
     train_split = int(len(dataset)*0.6)
     val_split = int(len(dataset)*0.2)
     train_dataset = dataset[:128]
-    val_dataset = dataset[train_split:train_split+val_split]
+    val_dataset = dataset[128:192]
     test_dataset = dataset[train_split+val_split:]
 
     train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
