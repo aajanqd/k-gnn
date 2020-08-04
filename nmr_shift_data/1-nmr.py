@@ -76,7 +76,7 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, pa
 def train(epoch):
     model.train()
     loss_all = 0
-    total = 0
+    total_atoms = 0
 
     # note that the number of atoms exceeds the number of carbons, and therefore there will be many zeros
     for i, data in enumerate(train_loader):
@@ -87,6 +87,7 @@ def train(epoch):
         target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
 
         mask = torch.FloatTensor(data.mask)
+        atoms = mask.sum().item()
         mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
 
         pred = model(data)
@@ -95,14 +96,14 @@ def train(epoch):
         loss.backward()
         loss_all += loss
         optimizer.step()
-        total += 1
-    return float(loss_all) / total
+        total_atoms += atoms
+    return float(loss_all) / total_atoms
 
 
 def test(loader):
     model.eval()
     error = 0
-    total = 0
+    total_atoms = 0
 
     for data in loader:
         data = data.to(device)
@@ -111,13 +112,14 @@ def test(loader):
         target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
 
         mask = torch.FloatTensor(data.mask)
+        atoms = mask.sum().item()
         mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
 
         pred = model(data)
 
-        error += loss_functions.MAE_loss(pred, target, mask)  # MAE
-        total += 1
-    return float(error) / total
+        error += loss_functions.MAE_loss(pred, target, mask)
+        total_atoms += atoms
+    return float(error) / total_atoms
 
 for epoch in range(1, 301):
     lr = scheduler.optimizer.param_groups[0]['lr']
