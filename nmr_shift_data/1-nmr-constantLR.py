@@ -49,27 +49,27 @@ class Net(torch.nn.Module):
 
     def forward(self, data):
         x = data.x #4096x37
-        print('Initial x: '+str(x))
-        sys.stdout.flush()
+        # print('Initial x: '+str(x))
+        # sys.stdout.flush()
         x = F.elu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
-        print('Conv1 x: '+str(x))
-        sys.stdout.flush()
+        # print('Conv1 x: '+str(x))
+        # sys.stdout.flush()
         x = F.elu(self.conv2(x, data.edge_index, data.edge_attr)) #4096x256
-        print('Conv2 x: '+str(x))
-        sys.stdout.flush()
+        # print('Conv2 x: '+str(x))
+        # sys.stdout.flush()
         x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
-        print('Conv3 x: '+str(x))
-        sys.stdout.flush()
+        # print('Conv3 x: '+str(x))
+        # sys.stdout.flush()
 
         x = F.elu(self.fc1(x)) #4096x256
-        print('Linear1 x: '+str(x))
-        sys.stdout.flush()
+        # print('Linear1 x: '+str(x))
+        # sys.stdout.flush()
         x = F.elu(self.fc2(x)) #4096x128
-        print('Linear2 x: '+str(x))
-        sys.stdout.flush()
+        # print('Linear2 x: '+str(x))
+        # sys.stdout.flush()
         x = self.fc3(x) #4096x1
-        print('Final x: '+str(x))
-        sys.stdout.flush()
+        # print('Final x: '+str(x))
+        # sys.stdout.flush()
         return x.flatten() #4096
     
     def initialize_weights(self):
@@ -92,7 +92,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 def train(epoch):
     model.train()
     loss_all = 0
-    total = 0
+    total_atoms = 0
 
     # note that the number of atoms exceeds the number of carbons, and therefore there will be many zeros
     for i, data in enumerate(train_loader):
@@ -103,6 +103,7 @@ def train(epoch):
         target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
 
         mask = torch.FloatTensor(data.mask)
+        atoms = mask.sum().item()
         mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
 
         pred = model(data)
@@ -111,43 +112,46 @@ def train(epoch):
         loss.backward()
         loss_all += loss
         optimizer.step()
-        total += 1
-    return float(loss_all) / total
+        total_atoms += atoms
+    return float(loss_all) / total_atoms
 
 
-# def test(loader):
-#     model.eval()
-#     error = 0
-#     total = 0
+def test(loader):
+    model.eval()
+    error = 0
+    total_atoms = 0
 
-#     for data in loader:
-#         data = data.to(device)
+    for data in loader:
+        data = data.to(device)
 
-#         target = torch.FloatTensor(data.y)
-#         target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
+        target = torch.FloatTensor(data.y)
+        target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
 
-#         mask = torch.FloatTensor(data.mask)
-#         mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
+        mask = torch.FloatTensor(data.mask)
+        atoms = mask.sum().item()
+        mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
 
-#         pred = model(data)
+        pred = model(data)
 
-#         error += loss_functions.MAE_loss(pred, target, mask)  # MAE
-#         total += 1
-#     return float(error) / total
+        error += loss_functions.MAE_loss(pred, target, mask)
+        total_atoms += atoms
+    return float(error) / total_atoms
+
+
+best_val_error = 100000000000000000
 
 for epoch in range(1, 301):
     lr = 0.0001
     avg_train_loss = train(epoch)
     print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}'.format(epoch, lr, avg_train_loss))
-    # val_error = test(val_loader)
-    # scheduler.step(val_error)
-    # test_error = test(test_loader)
+    val_error = test(val_loader)
+    scheduler.step(val_error)
+    test_error = test(test_loader)
 
-    # best_val_error = 100000000000000000
-    # if val_error <= best_val_error:
-    #     best_val_error = val_error
-    #     print('VAL ERROR IMPROVED')
-    #     sys.stdout.flush()
+    if val_error <= best_val_error:
+        best_val_error = val_error
+        print('VAL ERROR IMPROVED')
+        sys.stdout.flush()
 
-    # print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, test_error))
-    # sys.stdout.flush()
+    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, test_error))
+    sys.stdout.flush()
