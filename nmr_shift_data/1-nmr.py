@@ -121,6 +121,9 @@ def test(loader):
         total_atoms += atoms
     return float(error) / total_atoms
 
+
+best_val_error = 100000000000000000
+
 for epoch in range(1, 301):
     lr = scheduler.optimizer.param_groups[0]['lr']
     avg_train_loss = train(epoch)
@@ -128,7 +131,7 @@ for epoch in range(1, 301):
     scheduler.step(val_error)
     test_error = test(test_loader)
 
-    best_val_error = 100000000000000000
+
     if val_error <= best_val_error:
         best_val_error = val_error
         print('VAL ERROR IMPROVED')
