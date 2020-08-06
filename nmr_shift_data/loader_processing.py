@@ -1,6 +1,4 @@
 import rdkit
-
-import os.path as osp
 import graph_conv_many_nuc_util
 import torch
 import torch_geometric.transforms as T
@@ -8,7 +6,6 @@ from dataloader import DataLoader
 import sys
 from torch_geometric.data import (InMemoryDataset, download_url, extract_tar,
                                   Data)
-
 
 class knnGraph(InMemoryDataset):
     def __init__(self,
@@ -68,8 +65,8 @@ def process(infile):
 
     train_split = int(len(dataset)*0.6)
     val_split = int(len(dataset)*0.2)
-    train_dataset = dataset[:128]
-    val_dataset = dataset[128:192]
+    train_dataset = dataset[:train_split]
+    val_dataset = dataset[train_split:train_split+val_split]
     test_dataset = dataset[train_split+val_split:]
 
     train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
