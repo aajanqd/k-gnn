@@ -111,6 +111,7 @@ def train(epoch):
 def test(loader):
     model.eval()
     error = 0
+    test_loss = 0
     total_atoms = 0
 
     for data in loader:
@@ -140,8 +141,8 @@ for epoch in range(1500):
     avg_train_loss = train(epoch)
     val_error, val_loss = test(val_loader)
     scheduler.step(val_error)
-    test_error, test_loss = test(test_loader)
-    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Val Loss: {:.7f}, Test Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, val_loss, test_loss, test_error))
+    test_error, test_mse_loss = test(test_loader)
+    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Val Loss: {:.7f}, Test Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, val_loss, test_mse_loss, test_error))
     sys.stdout.flush()
     # epochs.append(epoch)
     # training_losses.append(avg_train_loss)
