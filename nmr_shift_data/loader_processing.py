@@ -63,15 +63,15 @@ def process(infile):
     print('made dataset')
     sys.stdout.flush()
 
-    train_split = int(len(dataset)*0.6)
-    val_split = int(len(dataset)*0.2)
+    train_split = int(len(dataset)*0.45)
+    val_split = int(len(dataset)*0.15)
     train_dataset = dataset[:train_split]
     val_dataset = dataset[train_split:train_split+val_split]
-    test_dataset = dataset[train_split+val_split:]
+    test_dataset = dataset[train_split+val_split:train_split+2*val_split]
 
-    train_loader = DataLoader(train_dataset, batch_size=28, num_workers=1)
-    val_loader = DataLoader(val_dataset, batch_size=28, num_workers=1)
-    test_loader = DataLoader(test_dataset, batch_size=28, num_workers=1)
+    train_loader = DataLoader(train_dataset, batch_size=32, num_workers=1)
+    val_loader = DataLoader(val_dataset, batch_size=32, num_workers=1)
+    test_loader = DataLoader(test_dataset, batch_size=32, num_workers=1)
     print('created data loaders')
     sys.stdout.flush()
 
