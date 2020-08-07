@@ -52,6 +52,9 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
                 vals[int(k), pn] = v
                 mask[int(k), pn] = 1.0
 
+        mask = torch.FloatTensor(mask).flatten()
+        vals = torch.FloatTensor(vals).flatten()
+
         v = (f_vect, edge_index, edge_attr, mask, vals)
 
         return v
