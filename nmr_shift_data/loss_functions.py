@@ -5,7 +5,7 @@ import sys
 def MSE_loss(x,y,mask):
     x_masked = x[mask>0]
     y_masked = y[mask>0]
-    return mse_loss(x_masked, y_masked)
+    return mse_loss(x_masked, y_masked, reduction = 'sum')
 
 def MAE_loss(x,y,mask):
     x_masked = x[mask>0]
