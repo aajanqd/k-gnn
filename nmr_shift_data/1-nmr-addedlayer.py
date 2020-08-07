@@ -1,14 +1,10 @@
 import rdkit
-import os.path as osp
 import graph_conv_many_nuc_util
 from graph_conv_many_nuc_util import move
-import argparse
 import torch
 from torch.nn import Sequential, Linear, ReLU
 import torch.nn.functional as F
 from torch_scatter import scatter_mean
-from torch_geometric.datasets import QM9
-import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
 import sys
 from loader_processing import process
@@ -25,6 +21,7 @@ class Net(torch.nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         M_in, M_out = 37, 128
+
         nn1 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv1 = NNConv(M_in, M_out, nn1)
 
@@ -36,13 +33,16 @@ class Net(torch.nn.Module):
         nn3 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv3 = NNConv(M_in, M_out, nn3)
 
-        M_in, M_out = M_out, 256
+        M_in, M_out = M_out, 1024
         nn4 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
-        self.conv4 = NNConv(M_in, M_out, nn4)
+        self.conv4 = NNConv(M_in, M_out, nn3)
 
-        self.fc1 = torch.nn.Linear(256, 128)
-        self.fc2 = torch.nn.Linear(128, 64)
-        self.fc3 = torch.nn.Linear(64, 1)
+        self.fc1 = torch.nn.Linear(1024, 512)
+        self.fc2 = torch.nn.Linear(512, 256)
+        self.fc3 = torch.nn.Linear(256, 128)
+        self.fc4 = torch.nn.Linear(128, 1)
+
+        self.initialize_weights()
 
     def forward(self, data):
         x = data.x #4096x37
@@ -51,12 +51,21 @@ class Net(torch.nn.Module):
         x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
         x = F.elu(self.conv4(x, data.edge_index, data.edge_attr)) #4096x512
 
-        # x = scatter_mean(x, data.batch, dim=0) #4096x512 -> 64x512 (aggregates across molecules)
-
         x = F.elu(self.fc1(x)) #4096x256
         x = F.elu(self.fc2(x)) #4096x128
-        x = self.fc3(x) #4096x1
+        x = F.elu(self.fc3(x)) #4096x128
+        x = self.fc4(x) #4096x1
         return x.flatten() #4096
+    
+    def initialize_weights(self):
+        for m in self.modules():
+#             print(m)
+            if isinstance(m, Sequential):
+                for elem in m:
+                    if isinstance(elem, Linear):
+                        torch.nn.init.kaiming_uniform_(elem.weight)
+            elif isinstance(m, Linear):
+                torch.nn.init.kaiming_uniform_(elem.weight)
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -68,62 +77,43 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, pa
 def train(epoch):
     model.train()
     loss_all = 0
-    total = 0
+    total_atoms = 0
 
     # note that the number of atoms exceeds the number of carbons, and therefore there will be many zeros
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-
-        target = torch.FloatTensor(data.y)
-        target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
-
-        mask = torch.FloatTensor(data.mask)
-        mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
-
+        atoms = data.mask.sum().item()
         pred = model(data)
 
-        loss = loss_functions.MSE_loss(pred, target, mask)
+        loss = loss_functions.MSE_loss(pred, data.y, data.mask)
         loss.backward()
         loss_all += loss
         optimizer.step()
-        total += 1
-    return float(loss_all) / total
-
+        total_atoms += atoms
+    return float(loss_all) / total_atoms
 
 def test(loader):
     model.eval()
     error = 0
-    total = 0
+    loss = 0
+    total_atoms = 0
+    with torch.no_grad():
+        for data in loader:
+            data = data.to(device)
+            atoms = data.mask.sum().item()
+            pred = model(data)
 
-    for data in loader:
-        data = data.to(device)
+            loss += loss_functions.MSE_loss(pred, data.y, data.mask)
+            error += loss_functions.MAE_loss(pred, data.y, data.mask)
+            total_atoms += atoms
 
-        target = torch.FloatTensor(data.y)
-        target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
+        return float(error) / total_atoms, float(loss) / total_atoms
 
-        mask = torch.FloatTensor(data.mask)
-        mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
-
-        pred = model(data)
-
-        error += loss_functions.MAE_loss(pred, target, mask)  # MAE
-        total += 1
-    return float(error) / total
-
-for epoch in range(1, 301):
+for epoch in range(1500):
     lr = scheduler.optimizer.param_groups[0]['lr']
     avg_train_loss = train(epoch)
-    val_error = test(val_loader)
+    val_error, val_loss = test(val_loader)
     scheduler.step(val_error)
-    test_error = test(test_loader)
-
-    if best_val_error is None:
-        best_val_error = val_error
-    if val_error <= best_val_error:
-        best_val_error = val_error
-        print('VAL ERROR IMPROVED')
-        sys.stdout.flush()
-
-    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, test_error))
-    sys.stdout.flush()
+    test_error, test_loss = test(test_loader)
+    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Val Loss: {:.7f}, Test Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, val_loss, test_loss, test_error))

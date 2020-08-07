@@ -41,27 +41,13 @@ class Net(torch.nn.Module):
 
     def forward(self, data):
         x = data.x #4096x37
-        # print('Initial x: '+str(x))
-        # sys.stdout.flush()
         x = F.elu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
-        # print('Conv1 x: '+str(x))
-        # sys.stdout.flush()
         x = F.elu(self.conv2(x, data.edge_index, data.edge_attr)) #4096x256
-        # print('Conv2 x: '+str(x))
-        # sys.stdout.flush()
         x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
-        # print('Conv3 x: '+str(x))
-        # sys.stdout.flush()
 
         x = F.elu(self.fc1(x)) #4096x256
-        # print('Linear1 x: '+str(x))
-        # sys.stdout.flush()
         x = F.elu(self.fc2(x)) #4096x128
-        # print('Linear2 x: '+str(x))
-        # sys.stdout.flush()
         x = self.fc3(x) #4096x1
-        # print('Final x: '+str(x))
-        # sys.stdout.flush()
         return x.flatten() #4096
     
     def initialize_weights(self):
@@ -117,21 +103,10 @@ def test(loader):
 
         return float(error) / total_atoms, float(loss) / total_atoms
 
-# epochs = []
-# training_losses = []
-# val_losses = []
-# test_losses = []
-# test_errors = []
 for epoch in range(1500):
-#     torch.cuda.empty_cache()
     lr = scheduler.optimizer.param_groups[0]['lr']
     avg_train_loss = train(epoch)
     val_error, val_loss = test(val_loader)
     scheduler.step(val_error)
     test_error, test_loss = test(test_loader)
     print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Val Loss: {:.7f}, Test Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, val_loss, test_loss, test_error))
-    # epochs.append(epoch)
-    # training_losses.append(avg_train_loss)
-    # val_losses.append(val_loss)
-    # test_losses.append(test_loss)
-    # test_errors.append(test_error)
