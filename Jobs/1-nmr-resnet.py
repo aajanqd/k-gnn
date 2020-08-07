@@ -20,46 +20,40 @@ sys.stdout.flush()
 class Net(torch.nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        M_in, M_out = 37, 128
+        self.res_layers = 3
 
+        M_in, M_out = 37, 512
         nn1 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv1 = NNConv(M_in, M_out, nn1)
 
-        M_in, M_out = M_out, 256
-        nn2 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
-        self.conv2 = NNConv(M_in, M_out, nn2)
-
         M_in, M_out = M_out, 512
-        nn3 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
-        self.conv3 = NNConv(M_in, M_out, nn3)
+        self.conv_layers = nn.ModuleList()
+        for i in range(self.res_layers):
+            s = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
+            conv = NNConv(M_in, M_out, nn1)
+            self.conv_layers.append(conv)
 
-        M_in, M_out = M_out, 1024
-        nn4 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
-        self.conv4 = NNConv(M_in, M_out, nn4)
-
-        self.fc1 = torch.nn.Linear(1024, 512)
-        self.fc2 = torch.nn.Linear(512, 256)
-        self.fc3 = torch.nn.Linear(256, 128)
-        self.fc4 = torch.nn.Linear(128, 1)
+        self.fc1 = torch.nn.Linear(512, 256)
+        self.fc2 = torch.nn.Linear(256, 128)
+        self.fc3 = torch.nn.Linear(128, 1) #64x64
 
         self.initialize_weights()
 
     def forward(self, data):
         x = data.x #4096x37
         x = F.elu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
-        x = F.elu(self.conv2(x, data.edge_index, data.edge_attr)) #4096x256
-        x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
-        x = F.elu(self.conv4(x, data.edge_index, data.edge_attr)) #4096x1024
 
-        x = F.elu(self.fc1(x)) #4096x512
-        x = F.elu(self.fc2(x)) #4096x256
-        x = F.elu(self.fc3(x)) #4096x128
-        x = self.fc4(x) #4096x1
+        for i in range(self.res_layers):
+            x2 = F.elu(self.conv_layers[i](x, data.edge_index, data.edge_attr))
+            x += x2
+
+        x = F.elu(self.fc1(x)) #4096x256
+        x = F.elu(self.fc2(x)) #4096x128
+        x = self.fc3(x) #4096x1
         return x.flatten() #4096
     
     def initialize_weights(self):
         for m in self.modules():
-#             print(m)
             if isinstance(m, Sequential):
                 for elem in m:
                     if isinstance(elem, Linear):
@@ -99,7 +93,6 @@ def test(loader):
     loss = 0
     total_atoms = 0
     with torch.no_grad():
-        torch.cuda.empty_cache()
         for data in loader:
             data = data.to(device)
             atoms = data.mask.sum().item()
