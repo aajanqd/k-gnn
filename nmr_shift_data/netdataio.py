@@ -49,11 +49,11 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
         mask = np.zeros((self.MAX_N, 1), dtype=np.float32) #64x1
         for pn in range(self.PRED_N):
             for k, v in pred_val[pn].items():
-                vals[int(k), pn] = v
+                target[int(k), pn] = v
                 mask[int(k), pn] = 1.0
 
         mask = torch.FloatTensor(mask).flatten()
-        target = torch.FloatTensor(vals).flatten()
+        target = torch.FloatTensor(target).flatten()
 
         v = (f_vect, edge_index, edge_attr, mask, target)
 
