@@ -35,7 +35,7 @@ class Net(torch.nn.Module):
 
         self.fc1 = torch.nn.Linear(512, 256)
         self.fc2 = torch.nn.Linear(256, 128)
-        self.fc3 = torch.nn.Linear(128, 1) #64x64
+        self.fc3 = torch.nn.Linear(128, 1)
 
         self.initialize_weights()
 
@@ -90,46 +90,32 @@ def train(epoch):
     for i, data in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-
-        target = torch.FloatTensor(data.y)
-        target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
-
-        mask = torch.FloatTensor(data.mask)
-        atoms = mask.sum().item()
-        mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
-
+        atoms = data.mask.sum().item()
         pred = model(data)
 
-        loss = loss_functions.MSE_loss(pred, target, mask)
+        loss = loss_functions.MSE_loss(pred, data.y, data.mask)
         loss.backward()
         loss_all += loss
         optimizer.step()
         total_atoms += atoms
     return float(loss_all) / total_atoms
 
-
 def test(loader):
     model.eval()
     error = 0
-    test_loss = 0
+    loss = 0
     total_atoms = 0
+    with torch.no_grad():
+        for data in loader:
+            data = data.to(device)
+            atoms = data.mask.sum().item()
+            pred = model(data)
 
-    for data in loader:
-        data = data.to(device)
+            loss += loss_functions.MSE_loss(pred, data.y, data.mask)
+            error += loss_functions.MAE_loss(pred, data.y, data.mask)
+            total_atoms += atoms
 
-        target = torch.FloatTensor(data.y)
-        target = target.reshape(target.size()[0]*target.size()[1]).flatten().to(device)
-
-        mask = torch.FloatTensor(data.mask)
-        atoms = mask.sum().item()
-        mask = mask.reshape(mask.size()[0]*mask.size()[1]).flatten().to(device)
-
-        pred = model(data)
-        
-        test_loss += loss_functions.MSE_loss(pred, target, mask)
-        error += loss_functions.MAE_loss(pred, target, mask)
-        total_atoms += atoms
-    return float(error) / total_atoms, float(test_loss) / total_atoms
+        return float(error) / total_atoms, float(loss) / total_atoms
 
 # epochs = []
 # training_losses = []
@@ -137,17 +123,15 @@ def test(loader):
 # test_losses = []
 # test_errors = []
 for epoch in range(1500):
+#     torch.cuda.empty_cache()
     lr = scheduler.optimizer.param_groups[0]['lr']
     avg_train_loss = train(epoch)
     val_error, val_loss = test(val_loader)
     scheduler.step(val_error)
-    test_error, test_mse_loss = test(test_loader)
-    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Val Loss: {:.7f}, Test Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, val_loss, test_mse_loss, test_error))
-    sys.stdout.flush()
+    test_error, test_loss = test(test_loader)
+    print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Val Loss: {:.7f}, Test Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, val_loss, test_loss, test_error))
     # epochs.append(epoch)
     # training_losses.append(avg_train_loss)
     # val_losses.append(val_loss)
     # test_losses.append(test_loss)
     # test_errors.append(test_error)
-
-
