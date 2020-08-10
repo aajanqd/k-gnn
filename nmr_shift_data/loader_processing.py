@@ -69,9 +69,9 @@ def process(infile):
     val_dataset = dataset[train_split:train_split+val_split]
     test_dataset = dataset[train_split+val_split:]
 
-    train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
-    val_loader = DataLoader(val_dataset, batch_size=64, num_workers=1)
-    test_loader = DataLoader(test_dataset, batch_size=64, num_workers=1)
+    train_loader = DataLoader(train_dataset, batch_size=16, num_workers=1)
+    val_loader = DataLoader(val_dataset, batch_size=16, num_workers=1)
+    test_loader = DataLoader(test_dataset, batch_size=16, num_workers=1)
     print('created data loaders')
     sys.stdout.flush()
 
