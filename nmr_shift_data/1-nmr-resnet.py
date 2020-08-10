@@ -30,7 +30,7 @@ class Net(torch.nn.Module):
         self.conv_layers = ModuleList()
         for i in range(self.res_layers):
             s = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
-            conv = NNConv(M_in, M_out, nn1)
+            conv = NNConv(M_in, M_out, s)
             self.conv_layers.append(conv)
 
         self.fc1 = torch.nn.Linear(512, 256)
@@ -42,6 +42,8 @@ class Net(torch.nn.Module):
     def forward(self, data):
         x = data.x #4096x37
         x = F.elu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
+        # print(x.size())
+        # sys.stdout.flush()
 
         for i in range(self.res_layers):
             x2 = F.elu(self.conv_layers[i](x, data.edge_index, data.edge_attr))
