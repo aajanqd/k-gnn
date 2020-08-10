@@ -33,14 +33,13 @@ class Net(torch.nn.Module):
         nn3 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv3 = NNConv(M_in, M_out, nn3)
 
-        M_in, M_out = M_out, 1024
+        M_in, M_out = M_out, 512
         nn4 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv4 = NNConv(M_in, M_out, nn4)
 
-        self.fc1 = torch.nn.Linear(1024, 512)
-        self.fc2 = torch.nn.Linear(512, 256)
-        self.fc3 = torch.nn.Linear(256, 128)
-        self.fc4 = torch.nn.Linear(128, 1)
+        self.fc1 = torch.nn.Linear(512, 256)
+        self.fc2 = torch.nn.Linear(256, 128)
+        self.fc3 = torch.nn.Linear(128, 1)
 
         self.initialize_weights()
 
@@ -49,12 +48,11 @@ class Net(torch.nn.Module):
         x = F.elu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
         x = F.elu(self.conv2(x, data.edge_index, data.edge_attr)) #4096x256
         x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
-        x = F.elu(self.conv4(x, data.edge_index, data.edge_attr)) #4096x1024
+        x = F.elu(self.conv4(x, data.edge_index, data.edge_attr)) #4096x512
 
-        x = F.elu(self.fc1(x)) #4096x512
-        x = F.elu(self.fc2(x)) #4096x256
-        x = F.elu(self.fc3(x)) #4096x128
-        x = self.fc4(x) #4096x1
+        x = F.elu(self.fc1(x)) #4096x256
+        x = F.elu(self.fc2(x)) #4096x128
+        x = self.fc3(x) #4096x1
         return x.flatten() #4096
     
     def initialize_weights(self):
@@ -99,7 +97,6 @@ def test(loader):
     loss = 0
     total_atoms = 0
     with torch.no_grad():
-        torch.cuda.empty_cache()
         for data in loader:
             data = data.to(device)
             atoms = data.mask.sum().item()
@@ -112,8 +109,8 @@ def test(loader):
         return float(error) / total_atoms, float(loss) / total_atoms
 
 for epoch in range(1500):
+    # torch.cuda.empty_cache()
     lr = scheduler.optimizer.param_groups[0]['lr']
-    torch.cuda.empty_cache()
     avg_train_loss = train(epoch)
     val_error, val_loss = test(val_loader)
     scheduler.step(val_error)
