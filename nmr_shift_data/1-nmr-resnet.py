@@ -2,7 +2,7 @@ import rdkit
 import graph_conv_many_nuc_util
 from graph_conv_many_nuc_util import move
 import torch
-from torch.nn import Sequential, Linear, ReLU
+from torch.nn import Sequential, Linear, ReLU, ModuleList
 import torch.nn.functional as F
 from torch_scatter import scatter_mean
 from torch_geometric.nn import NNConv
@@ -27,7 +27,7 @@ class Net(torch.nn.Module):
         self.conv1 = NNConv(M_in, M_out, nn1)
 
         M_in, M_out = M_out, 512
-        self.conv_layers = nn.ModuleList()
+        self.conv_layers = ModuleList()
         for i in range(self.res_layers):
             s = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
             conv = NNConv(M_in, M_out, nn1)
