@@ -108,6 +108,7 @@ def test(loader):
         return float(error) / total_atoms, float(loss) / total_atoms
 
 for epoch in range(1500):
+    torch.cuda.empty_cache()
     lr = scheduler.optimizer.param_groups[0]['lr']
     avg_train_loss = train(epoch)
     val_error, val_loss = test(val_loader)

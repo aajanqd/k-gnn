@@ -20,7 +20,7 @@ sys.stdout.flush()
 class Net(torch.nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        
+
         M_in, M_out = 37, 128
         nn1 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv1 = NNConv(M_in, M_out, nn1)
@@ -104,6 +104,7 @@ def test(loader):
         return float(error) / total_atoms, float(loss) / total_atoms
 
 for epoch in range(1500):
+    # torch.cuda.empty_cache()
     lr = scheduler.optimizer.param_groups[0]['lr']
     avg_train_loss = train(epoch)
     val_error, val_loss = test(val_loader)
