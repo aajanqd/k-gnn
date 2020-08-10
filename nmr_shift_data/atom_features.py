@@ -194,7 +194,12 @@ def feat_tensor_atom(mol,
     while len(atom_features) < 64:
         atom_features.append(z)
 
+    atom_features = np.array(atom_features)
+    m = atom_features.mean(axis = 0)
+    s = atom_features.std(axis = 0)
+    atom_features_normalized = (atom_features-m)/s
+
     #atom features is a list of lists; inner list represents one atom and contains atom features
     # print(torch.Tensor(atom_features).size())
-    return torch.Tensor(atom_features)
+    return torch.Tensor(atom_features_normalized)
 
