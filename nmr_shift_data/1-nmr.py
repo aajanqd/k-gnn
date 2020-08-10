@@ -41,12 +41,12 @@ class Net(torch.nn.Module):
 
     def forward(self, data):
         x = data.x #4096x37
-        x = ReLU(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
-        x = ReLU(self.conv2(x, data.edge_index, data.edge_attr)) #4096x256
-        x = ReLU(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
+        x = F.relu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
+        x = F.relu(self.conv2(x, data.edge_index, data.edge_attr)) #4096x256
+        x = F.relu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
 
-        x = ReLU(self.fc1(x)) #4096x256
-        x = ReLU(self.fc2(x)) #4096x128
+        x = F.relu(self.fc1(x)) #4096x256
+        x = F.relu(self.fc2(x)) #4096x128
         x = self.fc3(x) #4096x1
         return x.flatten() #4096
     
