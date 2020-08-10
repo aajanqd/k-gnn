@@ -47,7 +47,8 @@ class Net(torch.nn.Module):
 
         for i in range(self.res_layers):
             x2 = F.elu(self.conv_layers[i](x, data.edge_index, data.edge_attr))
-            x += x2
+            x3 = x2 + x
+            x = x3
 
         x = F.elu(self.fc1(x)) #4096x256
         x = F.elu(self.fc2(x)) #4096x128
