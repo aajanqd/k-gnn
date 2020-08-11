@@ -70,12 +70,12 @@ class Net(torch.nn.Module):
     def forward(self, data):
         x = data.x
         x = F.elu(self.conv1(x, data.edge_index, data.edge_attr))
-        x = F.elu(self.conv2(x, data.edge_index, data.edge_attr))
-        x = F.elu(self.conv3(x, data.edge_index, data.edge_attr))
+        # x = F.elu(self.conv2(x, data.edge_index, data.edge_attr))
+        # x = F.elu(self.conv3(x, data.edge_index, data.edge_attr))
 
         x = scatter_mean(x, data.batch, dim=0)
 
-        x = F.elu(self.fc1(x))
+        # x = F.elu(self.fc1(x))
         x = F.elu(self.fc2(x))
         x = self.fc3(x)
         return x.view(-1)
