@@ -76,7 +76,6 @@ class Net(torch.nn.Module):
     
     def initialize_weights(self):
         for m in self.modules():
-#             print(m)
             if isinstance(m, Sequential):
                 for elem in m:
                     if isinstance(elem, Linear):
@@ -103,6 +102,8 @@ def train(epoch):
         atoms = data.mask.sum().item()
         pred = model(data)
 
+        print(pred.size(), data.y.size(), data.mask.size())
+        sys.stdout.flush()
         loss = loss_functions.MSE_loss(pred, data.y, data.mask)
         loss.backward()
         loss_all += loss
