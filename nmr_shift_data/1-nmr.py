@@ -65,7 +65,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = Net().to(device)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, patience=5, min_lr=0.00001)
+# scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, patience=5, min_lr=0.00001)
 
 def train(epoch):
     model.train()
@@ -105,9 +105,10 @@ def test(loader):
 
 for epoch in range(1500):
     # torch.cuda.empty_cache()
-    lr = scheduler.optimizer.param_groups[0]['lr']
+    # lr = scheduler.optimizer.param_groups[0]['lr']
+    lr = 0.001
     avg_train_loss = train(epoch)
     val_error, val_loss = test(val_loader)
-    scheduler.step(val_error)
+    # scheduler.step(val_error)
     test_error, test_loss = test(test_loader)
     print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Val Loss: {:.7f}, Test Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, val_loss, test_loss, test_error))
