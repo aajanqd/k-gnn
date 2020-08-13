@@ -39,7 +39,8 @@ class Net(torch.nn.Module):
 
         self.fc1 = torch.nn.Linear(512, 256)
         self.fc2 = torch.nn.Linear(256, 128)
-        self.fc3 = torch.nn.Linear(128, 1)
+        self.fc3 = torch.nn.Linear(128, 64)
+        self.fc3 = torch.nn.Linear(64, 1)
 
         self.initialize_weights()
 
@@ -79,6 +80,7 @@ def train(epoch):
 
     # note that the number of atoms exceeds the number of carbons, and therefore there will be many zeros
     for i, data in enumerate(train_loader):
+        if epoch == 0:
         data = data.to(device)
         optimizer.zero_grad()
         atoms = data.mask.sum().item()
