@@ -74,7 +74,6 @@ def train(epoch):
 
     # note that the number of atoms exceeds the number of carbons, and therefore there will be many zeros
     for i, data in enumerate(train_loader):
-        if epoch == 0:
         data = data.to(device)
         optimizer.zero_grad()
         atoms = data.mask.sum().item()
