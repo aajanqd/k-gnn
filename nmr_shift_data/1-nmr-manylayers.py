@@ -66,7 +66,7 @@ class Net(torch.nn.Module):
         x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
         x = F.elu(self.conv4(x, data.edge_index, data.edge_attr)) #4096x512
         x = F.elu(self.conv5(x, data.edge_index, data.edge_attr)) #4096x128
-        # x = F.elu(self.conv6(x, data.edge_index, data.edge_attr)) #4096x256
+        x = F.elu(self.conv6(x, data.edge_index, data.edge_attr)) #4096x256
         # x = F.elu(self.conv7(x, data.edge_index, data.edge_attr)) #4096x512
         # x = F.elu(self.conv8(x, data.edge_index, data.edge_attr)) #4096x512
 
