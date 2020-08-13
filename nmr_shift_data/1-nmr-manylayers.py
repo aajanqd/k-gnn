@@ -38,19 +38,19 @@ class Net(torch.nn.Module):
         self.conv4 = NNConv(M_in, M_out, nn4)
 
         M_in, M_out = M_out, 512
-        nn4 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
+        nn5 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv5 = NNConv(M_in, M_out, nn5)
 
         M_in, M_out = M_out, 512
-        nn4 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
+        nn6 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv6 = NNConv(M_in, M_out, nn6)
 
         M_in, M_out = M_out, 512
-        nn4 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
+        nn7 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv7 = NNConv(M_in, M_out, nn7)
 
         M_in, M_out = M_out, 512
-        nn4 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
+        nn8 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv8 = NNConv(M_in, M_out, nn8)
 
         self.fc1 = torch.nn.Linear(512, 256)
