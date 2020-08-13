@@ -103,8 +103,6 @@ def train(epoch):
         atoms = data.mask.sum().item()
         pred = model(data)
 
-        print(pred.size(), data.y.size(), data.mask.size())
-        sys.stdout.flush()
         loss = loss_functions.MSE_loss(pred, data.y, data.mask)
         loss.backward()
         loss_all += loss
@@ -137,3 +135,4 @@ for epoch in range(1500):
     scheduler.step(val_error)
     test_error, test_loss = test(test_loader)
     print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Val Loss: {:.7f}, Test Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, val_loss, test_loss, test_error))
+    sys.stdout.flush()
