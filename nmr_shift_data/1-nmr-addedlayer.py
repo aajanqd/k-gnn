@@ -21,26 +21,25 @@ class Net(torch.nn.Module):
     def __init__(self):
         super(Net, self).__init__()
 
-        M_in, M_out = 37, 128
+        M_in, M_out = 37, 64
         nn1 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv1 = NNConv(M_in, M_out, nn1)
 
-        M_in, M_out = M_out, 256
+        M_in, M_out = M_out, 64
         nn2 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv2 = NNConv(M_in, M_out, nn2)
 
-        M_in, M_out = M_out, 512
+        M_in, M_out = M_out, 64
         nn3 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv3 = NNConv(M_in, M_out, nn3)
 
-        M_in, M_out = M_out, 512
+        M_in, M_out = M_out, 64
         nn4 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv4 = NNConv(M_in, M_out, nn4)
 
-        self.fc1 = torch.nn.Linear(512, 256)
-        self.fc2 = torch.nn.Linear(256, 128)
-        self.fc3 = torch.nn.Linear(128, 64)
-        self.fc4 = torch.nn.Linear(64, 1)
+        self.fc1 = torch.nn.Linear(64, 32)
+        self.fc2 = torch.nn.Linear(32, 16)
+        self.fc3 = torch.nn.Linear(16, 1)
 
         self.initialize_weights()
 
@@ -53,8 +52,7 @@ class Net(torch.nn.Module):
 
         x = F.elu(self.fc1(x)) #4096x256
         x = F.elu(self.fc2(x)) #4096x128
-        x = F.elu(self.fc3(x)) #4096x128
-        x = self.fc4(x) #4096x1
+        x = self.fc3(x) #4096x1
         return x.flatten() #4096
     
     def initialize_weights(self):

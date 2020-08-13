@@ -132,7 +132,7 @@ for epoch in range(1, 301):
             'Test MAE norm: {:.7f}'.format(epoch, lr, loss, val_error,
                                            test_error,
                                            test_error / std[target].cuda()))
-        sys.stdout.flush()
+    sys.stdout.flush()
 
     # if best_val_error is None:
     #     best_val_error = val_error
