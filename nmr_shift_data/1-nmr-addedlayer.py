@@ -40,7 +40,7 @@ class Net(torch.nn.Module):
         self.fc1 = torch.nn.Linear(512, 256)
         self.fc2 = torch.nn.Linear(256, 128)
         self.fc3 = torch.nn.Linear(128, 64)
-        self.fc3 = torch.nn.Linear(64, 1)
+        self.fc4 = torch.nn.Linear(64, 1)
 
         self.initialize_weights()
 
@@ -53,7 +53,8 @@ class Net(torch.nn.Module):
 
         x = F.elu(self.fc1(x)) #4096x256
         x = F.elu(self.fc2(x)) #4096x128
-        x = self.fc3(x) #4096x1
+        x = F.elu(self.fc3(x)) #4096x128
+        x = self.fc4(x) #4096x1
         return x.flatten() #4096
     
     def initialize_weights(self):

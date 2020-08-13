@@ -63,6 +63,10 @@ class Net(torch.nn.Module):
         nn3 = Sequential(Linear(5, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv3 = NNConv(M_in, M_out, nn3)
 
+        M_in, M_out = M_out, 64
+        nn4 = Sequential(Linear(5, 128), ReLU(), Linear(128, M_in * M_out))
+        self.conv4 = NNConv(M_in, M_out, nn4)
+
         self.fc1 = torch.nn.Linear(64, 32)
         self.fc2 = torch.nn.Linear(32, 16)
         self.fc3 = torch.nn.Linear(16, 1)
