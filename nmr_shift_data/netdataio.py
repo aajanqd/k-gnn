@@ -31,6 +31,7 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
     def __getitem__(self, idx):
 
         mol = self.mols[idx]
+        NUM_ATOMS = mol.GetNumAtoms()
         
         #each value in pred_vals is a dictionary containing key value pairs of atom numbers and chem shift vals
         # pred_val returns the dictionary for the appropriate index (molecule)
@@ -45,8 +46,8 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
         edge_index, edge_attr = molecule_features.get_edge_attr_and_ind(mol)
 
         #pred_val is a dictionary containing key value pairs of atom numbers and chem shift vals
-        target = np.zeros((self.MAX_N, 1), dtype=np.float32) #64x1
-        mask = np.zeros((self.MAX_N, 1), dtype=np.float32) #64x1
+        target = np.zeros((NUM_ATOMS, 1), dtype=np.float32) #64x1
+        mask = np.zeros((NUM_ATOMS, 1), dtype=np.float32) #64x1
         for pn in range(self.PRED_N):
             for k, v in pred_val[pn].items():
                 target[int(k), pn] = v
