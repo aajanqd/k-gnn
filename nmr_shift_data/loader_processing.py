@@ -65,13 +65,13 @@ def process(infile):
 
     train_split = int(len(dataset)*0.6)
     val_split = int(len(dataset)*0.2)
-    # train_dataset = dataset[:train_split]
-    # val_dataset = dataset[train_split:train_split+val_split]
-    # test_dataset = dataset[train_split+val_split:]
+    train_dataset = dataset[:train_split]
+    val_dataset = dataset[train_split:train_split+val_split]
+    test_dataset = dataset[train_split+val_split:]
 
-    train_dataset = dataset[1:2]
-    val_dataset = dataset[2:3]
-    test_dataset = dataset[3:4]
+    # train_dataset = dataset[1:2]
+    # val_dataset = dataset[2:3]
+    # test_dataset = dataset[3:4]
 
     train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
     val_loader = DataLoader(val_dataset, batch_size=64, num_workers=1)

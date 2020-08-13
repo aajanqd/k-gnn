@@ -107,10 +107,9 @@ def test(loader):
 
 for epoch in range(1500):
     # torch.cuda.empty_cache()
-    # lr = scheduler.optimizer.param_groups[0]['lr']
-    lr = 0.001
+    lr = scheduler.optimizer.param_groups[0]['lr']
     avg_train_loss = train(epoch)
     val_error, val_loss = test(val_loader)
-    # scheduler.step(val_error)
+    scheduler.step(val_error)
     test_error, test_loss = test(test_loader)
     print('Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Val Loss: {:.7f}, Test Loss: {:.7f}, Test MAE: {:.7f}'.format(epoch, lr, avg_train_loss, val_loss, test_loss, test_error))
