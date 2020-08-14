@@ -66,7 +66,7 @@ class Net(torch.nn.Module):
         x = F.elu(self.conv3(x, data.edge_index, data.edge_attr)) #4096x512
         x = F.elu(self.conv4(x, data.edge_index, data.edge_attr)) #4096x512
         x = F.elu(self.conv5(x, data.edge_index, data.edge_attr)) #4096x128
-        x = F.elu(self.conv6(x, data.edge_index, data.edge_attr)) #4096x256
+        # x = F.elu(self.conv6(x, data.edge_index, data.edge_attr)) #4096x256
         # x = F.elu(self.conv7(x, data.edge_index, data.edge_attr)) #4096x512
         # x = F.elu(self.conv8(x, data.edge_index, data.edge_attr)) #4096x512
 
@@ -88,7 +88,7 @@ class Net(torch.nn.Module):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = Net().to(device)
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.7, patience=5, min_lr=0.00001)
 
 def train(epoch):
