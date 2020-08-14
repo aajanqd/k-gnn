@@ -41,7 +41,7 @@ class Net(torch.nn.Module):
         self.fc2 = torch.nn.Linear(32, 16)
         self.fc3 = torch.nn.Linear(16, 1)
 
-        self.initialize_weights()
+        # self.initialize_weights()
 
     def forward(self, data):
         x = data.x #4096x37
@@ -55,15 +55,15 @@ class Net(torch.nn.Module):
         x = self.fc3(x) #4096x1
         return x.flatten() #4096
     
-    def initialize_weights(self):
-        for m in self.modules():
-#             print(m)
-            if isinstance(m, Sequential):
-                for elem in m:
-                    if isinstance(elem, Linear):
-                        torch.nn.init.kaiming_uniform_(elem.weight)
-            elif isinstance(m, Linear):
-                torch.nn.init.kaiming_uniform_(elem.weight)
+#     def initialize_weights(self):
+#         for m in self.modules():
+# #             print(m)
+#             if isinstance(m, Sequential):
+#                 for elem in m:
+#                     if isinstance(elem, Linear):
+#                         torch.nn.init.kaiming_uniform_(elem.weight)
+#             elif isinstance(m, Linear):
+#                 torch.nn.init.kaiming_uniform_(elem.weight)
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

@@ -37,7 +37,7 @@ class Net(torch.nn.Module):
         self.fc2 = torch.nn.Linear(256, 128)
         self.fc3 = torch.nn.Linear(128, 1)
 
-        self.initialize_weights()
+        # self.initialize_weights()
 
     def forward(self, data):
         x = data.x #4096x37
