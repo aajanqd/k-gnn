@@ -8,8 +8,7 @@ from torch_scatter import scatter_mean
 from torch_geometric.datasets import QM9
 import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
-from k_gnn import GraphConv, DataLoader, avg_pool
-from k_gnn import ConnectedThreeMalkin
+from k_gnn import graph_conv, data_loader, pool, transform
 
 
 class MyFilter(object):
@@ -21,7 +20,7 @@ class MyPreTransform(object):
     def __call__(self, data):
         x = data.x
         data.x = data.x[:, :5]
-        data = ConnectedThreeMalkin()(data)
+        data = transform.ConnectedThreeMalkin()(data)
         data.x = x
         return data
 
@@ -95,7 +94,7 @@ class Net(torch.nn.Module):
         data.x = F.elu(self.conv3(data.x, data.edge_index, data.edge_attr))
         x_1 = scatter_mean(data.x, data.batch, dim=0)
 
-        data.x = avg_pool(data.x, data.assignment_index_3)
+        data.x = pool.avg_pool(data.x, data.assignment_index_3)
         data.x = torch.cat([data.x, data.iso_type_3], dim=1)
 
         data.x = F.elu(self.conv6(data.x, data.edge_index_3))
