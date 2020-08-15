@@ -22,20 +22,20 @@ class Net(torch.nn.Module):
         super(Net, self).__init__()
         self.res_layers = 3
 
-        M_in, M_out = 37, 512
+        M_in, M_out = 37, 64
         nn1 = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv1 = NNConv(M_in, M_out, nn1)
 
-        M_in, M_out = M_out, 512
+        M_in, M_out = M_out, 64
         self.conv_layers = ModuleList()
         for i in range(self.res_layers):
             s = Sequential(Linear(4, 128), ReLU(), Linear(128, M_in * M_out))
             conv = NNConv(M_in, M_out, s)
             self.conv_layers.append(conv)
 
-        self.fc1 = torch.nn.Linear(512, 256)
-        self.fc2 = torch.nn.Linear(256, 128)
-        self.fc3 = torch.nn.Linear(128, 1) #64x64
+        self.fc1 = torch.nn.Linear(64, 32)
+        self.fc2 = torch.nn.Linear(32, 16)
+        self.fc3 = torch.nn.Linear(16, 1) #64x64
 
         self.initialize_weights()
 
@@ -55,14 +55,14 @@ class Net(torch.nn.Module):
         x = self.fc3(x) #4096x1
         return x.flatten() #4096
     
-    def initialize_weights(self):
-        for m in self.modules():
-            if isinstance(m, Sequential):
-                for elem in m:
-                    if isinstance(elem, Linear):
-                        torch.nn.init.kaiming_uniform_(elem.weight)
-            elif isinstance(m, Linear):
-                torch.nn.init.kaiming_uniform_(elem.weight)
+    # def initialize_weights(self):
+    #     for m in self.modules():
+    #         if isinstance(m, Sequential):
+    #             for elem in m:
+    #                 if isinstance(elem, Linear):
+    #                     torch.nn.init.kaiming_uniform_(elem.weight)
+    #         elif isinstance(m, Linear):
+    #             torch.nn.init.kaiming_uniform_(elem.weight)
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
