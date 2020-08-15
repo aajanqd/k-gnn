@@ -42,12 +42,10 @@ class Net(torch.nn.Module):
     def forward(self, data):
         x = data.x #4096x37
         x = F.elu(self.conv1(x, data.edge_index, data.edge_attr)) #4096x128
-        # print(x.size())
-        # sys.stdout.flush()
 
         for i in range(self.res_layers):
             x2 = F.elu(self.conv_layers[i](x, data.edge_index, data.edge_attr))
-            x3 = x2 + x
+            x3 = x2 + 0.5*x
             x = x3
 
         x = F.elu(self.fc1(x)) #4096x256
