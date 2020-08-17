@@ -10,6 +10,9 @@ import sys
 from loader_processing import process
 import loss_functions
 
+print(torch.__version__)
+sys.stdout.flush()
+
 infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
                                                                
 train_loader, val_loader, test_loader = process(infile)
