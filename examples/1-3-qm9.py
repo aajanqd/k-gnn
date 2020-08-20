@@ -8,8 +8,8 @@ from torch_scatter import scatter_mean
 from torch_geometric.datasets import QM9
 import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
-from k_gnn import GraphConv, graph_conv, data_loader, pool, transform
-import sys
+from k_gnn import GraphConv, DataLoader, avg_pool
+from k_gnn import ConnectedThreeMalkin
 
 
 class MyFilter(object):
