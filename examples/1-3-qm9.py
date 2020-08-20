@@ -10,6 +10,7 @@ import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
 from k_gnn import GraphConv, DataLoader, avg_pool
 from k_gnn import ConnectedThreeMalkin
+import sys
 
 
 class MyFilter(object):
