@@ -20,7 +20,7 @@ class MyFilter(object):
 
 class MyPreTransform(object):
     def __call__(self, data):
-        x = data.x
+        x = data.x.clone()
         data.x = data.x[:, :5]
         data = ConnectedThreeMalkin()(data)
         data.x = x
