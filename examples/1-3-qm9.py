@@ -10,6 +10,7 @@ import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
 from k_gnn import GraphConv, DataLoader, avg_pool
 from k_gnn import ConnectedThreeMalkin
+import sys
 
 
 class MyFilter(object):
@@ -37,7 +38,8 @@ parser.add_argument('--target', default=0)
 args = parser.parse_args()
 target = int(args.target)
 
-print('---- Target: {} ----'.format(target), flush = True)
+print('---- Target: {} ----'.format(target))
+sys.stdout.flush()
 
 path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'data', '1-3-QM9')
 dataset = QM9(
@@ -79,7 +81,7 @@ class Net(torch.nn.Module):
         self.conv2 = NNConv(M_in, M_out, nn2)
 
         M_in, M_out = M_out, 64
-        nn3 = Sequential(Linear(5, 128), ReLU(), Linear(128, M_in * M_out))
+        nn3 = Sequential(Linear(6, 128), ReLU(), Linear(128, M_in * M_out))
         self.conv3 = NNConv(M_in, M_out, nn3)
 
         self.conv6 = GraphConv(64 + num_i_3, 64)
@@ -95,7 +97,7 @@ class Net(torch.nn.Module):
         data.x = F.elu(self.conv3(data.x, data.edge_index, data.edge_attr))
         x_1 = scatter_mean(data.x, data.batch, dim=0)
 
-        data.x = avg_pool(data.x, data.assignment_index_3)
+        data.x = pool.avg_pool(data.x, data.assignment_index_3)
         data.x = torch.cat([data.x, data.iso_type_3], dim=1)
 
         data.x = F.elu(self.conv6(data.x, data.edge_index_3))
@@ -119,19 +121,21 @@ for _ in range(5):
     dataset = dataset.shuffle()
 
     tenpercent = int(len(dataset) * 0.1)
-    print("###", flush = True)
+    print("###")
+    sys.stdout.flush()
     mean = dataset.data.y.mean(dim=0, keepdim=True)
     # mean_abs = dataset.data.y.abs().mean(dim=0, keepdim=True).to(device)  # .view(-1)
     std = dataset.data.y.std(dim=0, keepdim=True)
     dataset.data.y = (dataset.data.y - mean) / std
     mean, std = mean.to(device), std.to(device)
 
-    print("###", flush = True)
+    print("###")
+    sys.stdout.flush()
     test_dataset = dataset[:tenpercent].shuffle()
     val_dataset = dataset[tenpercent:2 * tenpercent].shuffle()
     train_dataset = dataset[2 * tenpercent:].shuffle()
 
-    print(len(train_dataset), len(val_dataset), len(test_dataset), flush = True)
+    # print(len(train_dataset), len(val_dataset), len(test_dataset))
 
     batch_size = 64
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -181,26 +185,34 @@ for _ in range(5):
         loss = train()
         val_error, _ = test(val_loader)
         scheduler.step(val_error)
+        test_error, log_test_error = test(test_loader)
 
-        if best_val_error is None or val_error <= best_val_error:
-            test_error, log_test_error = test(test_loader)
-            best_val_error = val_error
+        # if best_val_error is None or val_error <= best_val_error:
+        #     test_error, log_test_error = test(test_loader)
+        #     best_val_error = val_error
 
         print('Epoch: {:03d}, LR: {:.7f}, Loss: {:.7f}, Validation MAE: {:.7f}, '
-              'Test MAE: {:.7f}'.format(epoch, lr, loss, val_error, test_error), flush = True)
+              'Test MAE: {:.7f}'.format(epoch, lr, loss, val_error, test_error))
+        sys.stdout.flush()
 
         if lr < 0.000001:
-            print("Converged.", flush = True)
+            print("Converged.")
+            sys.stdout.flush()
             break
 
     results.append(test_error)
     results_log.append(log_test_error)
 
-print("########################", flush = True)
-print(results, flush = True)
+print("########################")
+sys.stdout.flush()
+print(results)
+sys.stdout.flush()
 results = np.array(results)
-print(results.mean(), results.std(), flush = True)
+print(results.mean(), results.std())
+sys.stdout.flush()
 
-print(results_log, flush = True)
+print(results_log)
+sys.stdout.flush()
 results_log = np.array(results_log)
-print(results_log.mean(), results_log.std(), flush = True)
+print(results_log.mean(), results_log.std())
+sys.stdout.flush()
