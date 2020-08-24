@@ -10,7 +10,7 @@ import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
 from k_gnn import GraphConv, DataLoader, avg_pool
 from k_gnn import ConnectedThreeMalkin
-from sys.stdout import flush
+import sys
 
 
 class MyFilter(object):
@@ -39,7 +39,7 @@ args = parser.parse_args()
 target = int(args.target)
 
 print('---- Target: {} ----'.format(target))
-flush()
+sys.stdout.flush()
 
 path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'data', '1-3-QM9')
 dataset = QM9(
@@ -122,7 +122,7 @@ for _ in range(5):
 
     tenpercent = int(len(dataset) * 0.1)
     print("###")
-    flush()
+    sys.stdout.flush()
     mean = dataset.data.y.mean(dim=0, keepdim=True)
     # mean_abs = dataset.data.y.abs().mean(dim=0, keepdim=True).to(device)  # .view(-1)
     std = dataset.data.y.std(dim=0, keepdim=True)
@@ -130,13 +130,13 @@ for _ in range(5):
     mean, std = mean.to(device), std.to(device)
 
     print("###")
-    flush()
+    sys.stdout.flush()
     test_dataset = dataset[:tenpercent].shuffle()
     val_dataset = dataset[tenpercent:2 * tenpercent].shuffle()
     train_dataset = dataset[2 * tenpercent:].shuffle()
 
     print(len(train_dataset), len(val_dataset), len(test_dataset))
-    flush()
+    sys.stdout.flush()
 
     batch_size = 64
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -196,22 +196,22 @@ for _ in range(5):
 
         if lr < 0.000001:
             print("Converged.")
-            flush()
+            sys.stdout.flush()
             break
 
     results.append(test_error)
     results_log.append(log_test_error)
 
 print("########################")
-flush()
+sys.stdout.flush()
 print(results)
-flush()
+sys.stdout.flush()
 results = np.array(results)
 print(results.mean(), results.std())
-flush()
+sys.stdout.flush()
 
 print(results_log)
-flush()
+sys.stdout.flush()
 results_log = np.array(results_log)
 print(results_log.mean(), results_log.std())
-flush()
+sys.stdout.flush()
