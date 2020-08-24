@@ -10,7 +10,7 @@ import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
 from k_gnn import GraphConv, DataLoader, avg_pool
 from k_gnn import ConnectedThreeMalkin
-import sys
+from sys.stdout import flush
 
 
 class MyFilter(object):
@@ -20,7 +20,7 @@ class MyFilter(object):
 
 class MyPreTransform(object):
     def __call__(self, data):
-        x = data.x.clone()
+        x = data.x
         data.x = data.x[:, :5]
         data = ConnectedThreeMalkin()(data)
         data.x = x
@@ -39,7 +39,7 @@ args = parser.parse_args()
 target = int(args.target)
 
 print('---- Target: {} ----'.format(target))
-sys.stdout.flush()
+flush()
 
 path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'data', '1-3-QM9')
 dataset = QM9(
@@ -122,7 +122,7 @@ for _ in range(5):
 
     tenpercent = int(len(dataset) * 0.1)
     print("###")
-    sys.stdout.flush()
+    flush()
     mean = dataset.data.y.mean(dim=0, keepdim=True)
     # mean_abs = dataset.data.y.abs().mean(dim=0, keepdim=True).to(device)  # .view(-1)
     std = dataset.data.y.std(dim=0, keepdim=True)
@@ -130,12 +130,13 @@ for _ in range(5):
     mean, std = mean.to(device), std.to(device)
 
     print("###")
-    sys.stdout.flush()
+    flush()
     test_dataset = dataset[:tenpercent].shuffle()
     val_dataset = dataset[tenpercent:2 * tenpercent].shuffle()
     train_dataset = dataset[2 * tenpercent:].shuffle()
 
-    # print(len(train_dataset), len(val_dataset), len(test_dataset))
+    print(len(train_dataset), len(val_dataset), len(test_dataset))
+    flush()
 
     batch_size = 64
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -185,34 +186,32 @@ for _ in range(5):
         loss = train()
         val_error, _ = test(val_loader)
         scheduler.step(val_error)
-        test_error, log_test_error = test(test_loader)
 
-        # if best_val_error is None or val_error <= best_val_error:
-        #     test_error, log_test_error = test(test_loader)
-        #     best_val_error = val_error
+        if best_val_error is None or val_error <= best_val_error:
+            test_error, log_test_error = test(test_loader)
+            best_val_error = val_error
 
         print('Epoch: {:03d}, LR: {:.7f}, Loss: {:.7f}, Validation MAE: {:.7f}, '
               'Test MAE: {:.7f}'.format(epoch, lr, loss, val_error, test_error))
-        sys.stdout.flush()
 
         if lr < 0.000001:
             print("Converged.")
-            sys.stdout.flush()
+            flush()
             break
 
     results.append(test_error)
     results_log.append(log_test_error)
 
 print("########################")
-sys.stdout.flush()
+flush()
 print(results)
-sys.stdout.flush()
+flush()
 results = np.array(results)
 print(results.mean(), results.std())
-sys.stdout.flush()
+flush()
 
 print(results_log)
-sys.stdout.flush()
+flush()
 results_log = np.array(results_log)
 print(results_log.mean(), results_log.std())
-sys.stdout.flush()
+flush()
