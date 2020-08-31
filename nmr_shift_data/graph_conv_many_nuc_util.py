@@ -62,7 +62,7 @@ class ModelTrial():
         """
         
 
-default_atomicno = [1, 6, 7, 8, 9, 15, 16, 17] #filtering for H, C, N, O, F, Cl, etd
+default_atomicno = [1, 6, 7, 8, 9, 15, 16, 17] #filtering for H, C, N, O, F, Cl, etc
 
 ### Create datasets and data loaders
 

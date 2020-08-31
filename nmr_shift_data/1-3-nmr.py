@@ -1,16 +1,16 @@
-import os.path as osp
-
-import argparse
+import rdkit
+import graph_conv_many_nuc_util
+from graph_conv_many_nuc_util import move
 import torch
-import torch.nn.functional as F
 from torch.nn import Sequential, Linear, ReLU
+import torch.nn.functional as F
 from torch_scatter import scatter_mean
-from torch_geometric.datasets import QM9
-import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
+import sys
+from loader_processing import process
+import loss_functions
 from k_gnn import GraphConv, DataLoader, avg_pool
 from k_gnn import ConnectedThreeMalkin
-import sys
 
 infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
                                                                
