@@ -11,7 +11,7 @@ from numba import jit
 import scipy.spatial
 from rdkit import Chem
 from util import get_nos_coords
-
+import sys
 
 
 def atom_adj_mat(mol, conformer_i, **kwargs):
@@ -215,6 +215,7 @@ def feat_tensor_atom(mol,
     #     atom_features.append(z)
 
     #atom features is a list of lists; inner list represents one atom and contains atom features
-    # print(torch.Tensor(atom_features).size())
+    print(torch.Tensor(atom_features).size())
+    sys.stdout.flush()
     return torch.Tensor(atom_features), torch.Tensor(atom_types)
 
