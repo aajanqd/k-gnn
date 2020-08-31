@@ -34,7 +34,7 @@ class TwoMalkin(object):
 
 class ConnectedTwoMalkin(object):
     def __call__(self, data):
-        out = graph_cpu.connected_two_malkin(data.edge_index, data.x,
+        out = graph_cpu.connected_two_malkin(data.edge_index, data.atom_types,
                                              data.num_nodes)
         data.edge_index_2, data.assignment_index_2, data.iso_type_2 = out
         return data

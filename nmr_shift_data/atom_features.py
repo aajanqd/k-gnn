@@ -137,11 +137,31 @@ def feat_tensor_atom(mol,
         Chem.rdPartialCharges.ComputeGasteigerCharges(mol)
 
     atom_features = []
+    atom_types = []
       
     for i in range(mol.GetNumAtoms()): #for every atom in molecule
         a = mol.GetAtomWithIdx(i) #gets atom of index i
         atomic_num = int(atomic_nos[i])
         atom_feature = []
+
+        symbol = a.GetSymbol()
+
+        if symbol == 'H':
+            atom_types.append([1,0,0,0,0,0,0,0])
+        elif symbol == 'C':
+            atom_types.append([0,1,0,0,0,0,0,0])
+        elif symbol == 'N':
+            atom_types.append([0,0,1,0,0,0,0,0])
+        elif symbol == 'O':
+            atom_types.append([0,0,0,1,0,0,0,0])
+        elif symbol == 'F':
+            atom_types.append([0,0,0,0,1,0,0,0])
+        elif symbol == 'P':
+            atom_types.append([0,0,0,0,0,1,0,0])
+        elif symbol == 'S':
+            atom_types.append([0,0,0,0,0,0,1,0])
+        elif symbol == 'Cl':
+            atom_types.append([0,0,0,0,0,0,0,1])
 
         if feat_atomicno:
             atom_feature += [atomic_num]
@@ -196,5 +216,5 @@ def feat_tensor_atom(mol,
 
     #atom features is a list of lists; inner list represents one atom and contains atom features
     # print(torch.Tensor(atom_features).size())
-    return torch.Tensor(atom_features)
+    return torch.Tensor(atom_features), torch.Tensor(atom_types)
 

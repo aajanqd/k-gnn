@@ -4,6 +4,7 @@ import torch
 import torch_geometric.transforms as T
 from dataloader import DataLoader
 import sys
+from k_gnn import ConnectedThreeMalkin
 from torch_geometric.data import (InMemoryDataset, download_url, extract_tar,
                                   Data)
 
@@ -33,10 +34,11 @@ class knnGraph(InMemoryDataset):
         data_list = [
             Data(
                 x=d[0],
-                edge_index=d[1],
-                edge_attr=d[2],
-                mask=d[3],
-                y=d[4],
+                atom_types=d[1],
+                edge_index=d[2],
+                edge_attr=d[3],
+                mask=d[4],
+                y=d[5],
                 ) for d in raw_data_list
         ]
 
@@ -49,7 +51,7 @@ class knnGraph(InMemoryDataset):
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
 
-def process(infile):
+def process(infile, kgnn = False):
     dataset_hparams = graph_conv_many_nuc_util.DEFAULT_DATA_HPARAMS
     ds = graph_conv_many_nuc_util.make_datasets({'filename' : infile}, dataset_hparams)
     print('made datasets')
@@ -63,15 +65,24 @@ def process(infile):
     print('made dataset')
     sys.stdout.flush()
 
+    if kgnn == True:
+        dataset = ConnectedMalkin()(dataset)
+
+        #gets all the unique values of iso_type_3 and arranges them
+        #then returns the index of the values in the original iso_type_3 in the unique ordered iso_type_3
+        #reassigns this vector of indices (same size as original iso_type_3) to iso_type_3
+        dataset.data.iso_type_3 = torch.unique(dataset.data.iso_type_3, True, True)[1]
+
+        #gets max of iso_type_3 + 1. This is the max index + 1
+        num_i_3 = dataset.data.iso_type_3.max().item() + 1
+
+        dataset.data.iso_type_3 = F.one_hot(dataset.data.iso_type_3, num_classes=num_i_3).to(torch.float)
+
     train_split = int(len(dataset)*0.6)
     val_split = int(len(dataset)*0.2)
     train_dataset = dataset[:train_split]
     val_dataset = dataset[train_split:train_split+val_split]
     test_dataset = dataset[train_split+val_split:]
-
-    # train_dataset = dataset[1:2]
-    # val_dataset = dataset[2:3]
-    # test_dataset = dataset[3:4]
 
     train_loader = DataLoader(train_dataset, batch_size=64, num_workers=1)
     val_loader = DataLoader(val_dataset, batch_size=64, num_workers=1)
@@ -79,4 +90,7 @@ def process(infile):
     print('created data loaders')
     sys.stdout.flush()
 
-    return train_loader, val_loader, test_loader
+    if kgnn == False:
+        return train_loader, val_loader, test_loader
+    else:
+        return train_loader, val_loader, test_loader, num_i_3

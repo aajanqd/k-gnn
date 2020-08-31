@@ -41,7 +41,13 @@ inline Tensor degree(Tensor row, int64_t num_nodes) {
 }
 
 inline tuple<Tensor, Tensor> to_csr(Tensor index, int64_t num_nodes) {
+  //index = data.edge_index, num_nodes = data.num_nodes
+  //note that index is 2 x num nodes, where entries are indices of atoms in molecule
+
+  //sort_by_row orders index by indices in row in ascending order
   index = sort_by_row(index);
+
+  //transformation to row in edge_index that I don't understand
   auto row = degree(index[0], num_nodes).cumsum(0);
   row = cat({torch::zeros(1, row.options()), row}, 0); // Prepend zero.
   return make_tuple(row, index[1]);
