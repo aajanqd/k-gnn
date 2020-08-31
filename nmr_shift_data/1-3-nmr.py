@@ -14,7 +14,8 @@ from k_gnn import ConnectedThreeMalkin
 
 infile = '/scratch/aqd215/k-gnn/nmr_shift_data/graph_conv_many_nuc_pipeline.datasets/graph_conv_many_nuc_pipeline.data.13C.nmrshiftdb_hconfspcl_nmrshiftdb.aromatic.64.0.mol_dict.pickle'
                                                                
-train_loader, val_loader, test_loader, num_i_3 = process(infile, kgnn = True)
+# train_loader, val_loader, test_loader, num_i_3 = process(infile, kgnn = True)
+train_loader, val_loader, test_loader = process(infile)
 
 print('train loaders in 1-nmr')
 sys.stdout.flush()

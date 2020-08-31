@@ -11,55 +11,6 @@ from tqdm import tqdm
 import time
 import numpy as np
 import pandas as pd
-class ModelTrial():
-    def __init__(self, training_loader, 
-                 validation_loader, hparams):
-        self.learning_rate = hparams['learning_rate']
-        self.my_batch_size = hparams['batch_size']
-
-        # something
-
-
-    def batch_size(self):
-        return self.my_batch_size
-    
-    def build_model(self, hparams):
-        """
-        Return the model 
-        """
-        net = nets.GraphVertExtraLinModel( g_feature_n,[INT_D] * LAYER_N, resnet=USE_RESNET, 
-                                           noise=INIT_NOISE, agg_func=AGG_FUNC, GS=GS, 
-                                           OUT_DIM = len(tgt_nucs))
-        #data_feat = ['vect']
-
-        
-
-
-    def optimizer(self, model):
-        """
-        return the optimizer
-        """
-        
-        return torch.optim.Adam(model.parameters(),
-                                lr=self.learning_rate)
-    def loss(self):
-        """
-        Return a loss function that takes in two tensors
-        """
-
-        
-    def training_metrics(self):
-        """
-        """
-        return {
-            'classification_Error' : function, 
-            'nll_loss' : torch.nn.functional.nll_loss
-        
-        }
-
-    def validation_metrics(self):
-        """
-        """
         
 
 default_atomicno = [1, 6, 7, 8, 9, 15, 16, 17] #filtering for H, C, N, O, F, Cl, etc
