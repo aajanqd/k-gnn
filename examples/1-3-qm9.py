@@ -149,7 +149,7 @@ def test(loader):
 
 best_val_error = None
 for epoch in range(1, 301):
-	lr = scheduler.optimizer.param_groups[0]['lr']
+    lr = scheduler.optimizer.param_groups[0]['lr']
     loss = train(epoch)
     val_error = test(val_loader)
     scheduler.step(val_error)
@@ -163,7 +163,7 @@ for epoch in range(1, 301):
                                            test_error / std[target].cuda()))
     sys.stdout.flush()
 
-    
+
     # lr = scheduler.optimizer.param_groups[0]['lr']
     # loss = train(epoch)
     # val_error = test(val_loader)
