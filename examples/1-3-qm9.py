@@ -10,6 +10,7 @@ import torch_geometric.transforms as T
 from torch_geometric.nn import NNConv
 from k_gnn import GraphConv, DataLoader, avg_pool
 from k_gnn import ConnectedThreeMalkin
+import sys
 
 
 class MyFilter(object):
@@ -41,6 +42,7 @@ args = parser.parse_args()
 target = int(args.target)
 
 print('---- Target: {} ----'.format(target))
+sys.stdout.flush()
 
 path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'data', '1-3-QM9')
 dataset = QM9(
@@ -147,21 +149,37 @@ def test(loader):
 
 best_val_error = None
 for epoch in range(1, 301):
-    lr = scheduler.optimizer.param_groups[0]['lr']
+	lr = scheduler.optimizer.param_groups[0]['lr']
     loss = train(epoch)
     val_error = test(val_loader)
     scheduler.step(val_error)
+    test_error = test(test_loader)
 
-    if best_val_error is None:
-        best_val_error = val_error
-    if val_error <= best_val_error:
-        test_error = test(test_loader)
-        best_val_error = val_error
-        print(
+    print(
             'Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Validation MAE: {:.7f}, '
             'Test MAE: {:.7f}, '
             'Test MAE norm: {:.7f}'.format(epoch, lr, loss, val_error,
                                            test_error,
                                            test_error / std[target].cuda()))
-    else:
-        print('Epoch: {:03d}'.format(epoch))
+    sys.stdout.flush()
+
+    
+    # lr = scheduler.optimizer.param_groups[0]['lr']
+    # loss = train(epoch)
+    # val_error = test(val_loader)
+    # scheduler.step(val_error)
+
+    # if best_val_error is None:
+    #     best_val_error = val_error
+    # if val_error <= best_val_error:
+    #     test_error = test(test_loader)
+    #     best_val_error = val_error
+    #     print(
+    #         'Epoch: {:03d}, LR: {:7f}, Loss: {:.7f}, Validation MAE: {:.7f}, '
+    #         'Test MAE: {:.7f}, '
+    #         'Test MAE norm: {:.7f}'.format(epoch, lr, loss, val_error,
+    #                                        test_error,
+    #                                        test_error / std[target].cuda()))
+    #     sys.stdout.flush()
+    # else:
+    #     print('Epoch: {:03d}'.format(epoch))
