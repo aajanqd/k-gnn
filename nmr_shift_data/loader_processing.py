@@ -66,7 +66,7 @@ def process(infile, kgnn = False):
     sys.stdout.flush()
 
     if kgnn == True:
-        dataset = ConnectedMalkin()(dataset)
+        dataset.data = ConnectedThreeMalkin()(dataset.data)
 
         #gets all the unique values of iso_type_3 and arranges them
         #then returns the index of the values in the original iso_type_3 in the unique ordered iso_type_3
