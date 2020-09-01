@@ -58,6 +58,8 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
         target = torch.FloatTensor(target).flatten()
 
         v = (f_vect, atom_types, edge_index, edge_attr, mask, target)
+        print('f_vect: {}, atom_types: {}, edge_index: {}, edge_attr: {}, mask: {}, target: {}'.format(f_vect, atom_types, edge_index, edge_attr, mask, target))
+
         # v = (f_vect, edge_index, edge_attr, mask, target)
 
         return v
