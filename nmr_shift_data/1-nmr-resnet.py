@@ -16,11 +16,6 @@ train_loader, val_loader, test_loader = process(infile)
 print('train loaders in 1-nmr')
 sys.stdout.flush()
 
-for data in train_loader:
-    print('This is data: ' + str(data))
-    sys.stdout.flush()
-    break
-
 
 class Net(torch.nn.Module):
     def __init__(self):
