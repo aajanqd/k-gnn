@@ -32,21 +32,21 @@ class knnGraph(InMemoryDataset):
     def process(self):
         raw_data_list = torch.load(self.raw_paths[0])
         data_list = [
-            # Data(
-            #     x=d[0],
-            #     atom_types=d[1],
-            #     edge_index=d[2],
-            #     edge_attr=d[3],
-            #     mask=d[4],
-            #     y=d[5],
-            #     ) for d in raw_data_list
             Data(
                 x=d[0],
-                edge_index=d[1],
-                edge_attr=d[2],
-                mask=d[3],
-                y=d[4],
+                atom_types=d[1],
+                edge_index=d[2],
+                edge_attr=d[3],
+                mask=d[4],
+                y=d[5],
                 ) for d in raw_data_list
+            # Data(
+            #     x=d[0],
+            #     edge_index=d[1],
+            #     edge_attr=d[2],
+            #     mask=d[3],
+            #     y=d[4],
+            #     ) for d in raw_data_list
         ]
 
         if self.pre_filter is not None:
