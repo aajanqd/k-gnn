@@ -56,7 +56,8 @@ vector<Tensor> connected_malkin(Tensor index, Tensor x, int64_t num_nodes) {
   // tie(set_to_id, iso_type) = Assignment<K>::connected(row, col, x, num_nodes);
   // index = Connect<K>::malkin(row, col, set_to_id);
   // assignment = MapToTensor<K>::get(set_to_id);
-  return {index, x, num_nodes};
+  // return {index, assignment, iso_type};
+  return {1,2,3}
 }
 
 Tensor assignment_2to3(Tensor index, int64_t num_nodes) {
