@@ -1,6 +1,5 @@
 import rdkit
 import graph_conv_many_nuc_util
-from graph_conv_many_nuc_util import move
 import torch
 from torch.nn import Sequential, Linear, ReLU, ModuleList
 import torch.nn.functional as F
