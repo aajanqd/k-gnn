@@ -46,7 +46,7 @@ vector<Tensor> malkin(Tensor index, Tensor x, int64_t num_nodes) {
 }
 
 template <int64_t K>
-vector<Tensor> connected_malkin(Tensor index, Tensor x, int64_t num_nodes) {
+vector<int> connected_malkin(Tensor index, Tensor x, int64_t num_nodes) {
   //index = data.edge_index, x = data.x (first 5 cols for atom type), num_nodes = data.num_nodes
   // Tensor row, col;
   //to_csr returns a modified version of row from edge_index, and col from edge_index
