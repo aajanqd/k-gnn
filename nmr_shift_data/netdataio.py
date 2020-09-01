@@ -59,6 +59,7 @@ class MoleculeDatasetMulti(torch.utils.data.Dataset):
 
         v = (f_vect, atom_types, edge_index, edge_attr, mask, target)
         print('f_vect: {}, atom_types: {}, edge_index: {}, edge_attr: {}, mask: {}, target: {}'.format(f_vect, atom_types, edge_index, edge_attr, mask, target))
+        sys.stdout.flush()
 
         # v = (f_vect, edge_index, edge_attr, mask, target)
 
