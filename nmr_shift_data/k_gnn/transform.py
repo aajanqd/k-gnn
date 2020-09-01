@@ -77,8 +77,8 @@ class ConnectedThreeMalkin(object):
         # note that data.x is only the first 5 columns, which specify atom type (H, C, N, O, F)
         # out = graph_cpu.connected_three_malkin(data.edge_index, data.x, data.num_nodes)
 
-        out = graph_cpu.connected_three_malkin(data.edge_index, data.atom_types, data.num_nodes)
-        data.edge_index_3, data.assignment_index_3, data.iso_type_3 = out
+        # out = graph_cpu.connected_three_malkin(data.edge_index, data.atom_types, data.num_nodes)
+        # data.edge_index_3, data.assignment_index_3, data.iso_type_3 = out
         return data
 
     def __repr__(self):
