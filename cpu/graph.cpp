@@ -50,12 +50,12 @@ vector<Tensor> connected_malkin(Tensor index, Tensor x, int64_t num_nodes) {
   //index = data.edge_index, x = data.x (first 5 cols for atom type), num_nodes = data.num_nodes
   Tensor row, col;
   //to_csr returns a modified version of row from edge_index, and col from edge_index
-  tie(row, col) = to_csr(index, num_nodes);
+  // tie(row, col) = to_csr(index, num_nodes);
   Tensor assignment, iso_type;
-  map<vector<int64_t>, int64_t> set_to_id;
-  tie(set_to_id, iso_type) = Assignment<K>::connected(row, col, x, num_nodes);
-  index = Connect<K>::malkin(row, col, set_to_id);
-  assignment = MapToTensor<K>::get(set_to_id);
+  // map<vector<int64_t>, int64_t> set_to_id;
+  // tie(set_to_id, iso_type) = Assignment<K>::connected(row, col, x, num_nodes);
+  // index = Connect<K>::malkin(row, col, set_to_id);
+  // assignment = MapToTensor<K>::get(set_to_id);
   return {index, assignment, iso_type};
 }
 
