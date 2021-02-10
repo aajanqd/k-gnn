@@ -1,0 +1,11 @@
+made datasets
+saved temp files
+made dataset. dataset length: knnGraph(26913)
+created data loaders
+train loaders in 1-nmr
+Traceback (most recent call last):
+  File "../nmr_shift_data/1-3-nmr.py", line 67, in <module>
+    model = Net().to(device)
+  File "../nmr_shift_data/1-3-nmr.py", line 38, in __init__
+    self.conv6 = GraphConv(64 + num_i_3, 64)
+NameError: name 'num_i_3' is not defined

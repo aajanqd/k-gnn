@@ -1,0 +1,17 @@
+made datasets
+saved temp files
+made dataset. dataset length: knnGraph(26913)
+Traceback (most recent call last):
+  File "../nmr_shift_data/1-3-nmr.py", line 17, in <module>
+    train_loader, val_loader, test_loader, num_i_3 = process(infile, kgnn = True)
+  File "/scratch/aqd215/k-gnn/nmr_shift_data/loader_processing.py", line 75, in process
+    dataset.data.iso_type_3 = torch.unique(dataset.data.iso_type_3, True, True)[1]
+  File "/ext3/miniconda3/lib/python3.8/site-packages/torch/_jit_internal.py", line 265, in fn
+    return if_true(*args, **kwargs)
+  File "/ext3/miniconda3/lib/python3.8/site-packages/torch/_jit_internal.py", line 267, in fn
+    return if_false(*args, **kwargs)
+  File "/ext3/miniconda3/lib/python3.8/site-packages/torch/functional.py", line 778, in _return_inverse
+    output, inverse_indices, _ = _unique_impl(input, sorted, return_inverse, return_counts, dim)
+  File "/ext3/miniconda3/lib/python3.8/site-packages/torch/functional.py", line 678, in _unique_impl
+    output, inverse_indices, counts = torch._unique2(
+TypeError: _unique2(): argument 'input' (position 1) must be Tensor, not int
