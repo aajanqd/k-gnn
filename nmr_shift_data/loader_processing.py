@@ -62,7 +62,7 @@ def process(infile, kgnn = False):
     sys.stdout.flush()
 
     dataset = knnGraph(root='/scratch/aqd215/k-gnn/nmr_shift_data/temp_files/')
-    print('made dataset')
+    print('made dataset. dataset length: ' +str(dataset))
     sys.stdout.flush()
 
     if kgnn == True:
